@@ -1,5 +1,8 @@
-const rootReducer = (state = {}, action) => {
-    return state;
-};
+import { combineReducers } from 'redux';
+import playerReducer from './playerReducer';
+import computerReducer from './computerReducer';
 
-export default rootReducer;
+export default combineReducers({
+    player: playerReducer,
+    computer: computerReducer
+});
