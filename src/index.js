@@ -1,8 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { render } from "react-dom";
+import { Provider } from 'react-redux';
+import Root from './containers/Root';
+import store from './store/configureStore';
 
-const Index = () => {
- return <div>Lets Chess!!</div>;
-};
-
-ReactDOM.render(<Index />, document.getElementById("index"));
+render(
+    <Provider store={store}>
+        <Root store={store} />
+    </Provider>,
+    document.getElementById("index")
+);
