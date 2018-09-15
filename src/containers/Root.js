@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Route, BrowserRouter as Router } from 'react-router-dom';
-import SetUpGame from '../components/SetUpGame';
+import { Route, Switch } from 'react-router-dom';
+import SetUpGame from './SetUpGame';
+import Game from './Game';
 
 class Root extends Component {
     render() {
         return (
-            <Router>
-                <Route path='/' component={SetUpGame} />
-            </Router>
+            <Switch>
+                <Route exact path='/' component={SetUpGame} />
+                <Route path="/game" component={Game} />
+            </Switch>
         )
     }
 }
-
-Root.propTypes = {
-    store: PropTypes.object.isRequired
-};
 
 export default Root;
