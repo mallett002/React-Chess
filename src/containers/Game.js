@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Board from '../components/Board';
 
 class Game extends Component {
     render() {
@@ -9,9 +10,9 @@ class Game extends Component {
         console.log(player.inCheck);
         return (
             <div>
-                <h1>Game</h1>
+                <Board />
                 <p>The player is in check? {String(player.inCheck)}</p>
-                <Link exact to='/'>Back</Link>
+                <Link exact='true' to='/'>Back</Link>
             </div>
         )
     }

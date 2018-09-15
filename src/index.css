@@ -1,0 +1,15 @@
+
+
+/*BOARD --------------*/
+
+.boxes {
+    width: 240px;
+    margin: 0px auto;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.box {
+    margin: 0;
+    background: green;
+}
