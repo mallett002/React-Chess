@@ -16,8 +16,8 @@ class Board extends Component {
                 let box = document.createElement("div");
                 box.style.display = 'inline-block';
                 box.className = 'box';
-                box.style.width = 30 + "px";
-                box.style.height = 30 + "px";
+                box.style.width = 12.5 + "%";
+                box.style.height = 10 + "vw";
                 box.style.margin = 0;
                 box.id = `${x}${y}`;
                 box.style.background = (x + y) % 2 === 0 ? '#67a567' : '#c5c5c5';
