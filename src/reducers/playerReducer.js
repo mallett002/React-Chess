@@ -10,7 +10,7 @@ const initialState = {
     isTurn: false
 };
 
-const rootReducer = (state = initialState, action) => {
+const playerReducer = (state = initialState, action) => {
     switch (action.type) {
         case "PIECE_LOST":
             return {
@@ -30,4 +30,4 @@ const rootReducer = (state = initialState, action) => {
     }
 };
 
-export default rootReducer;
+export default playerReducer;
