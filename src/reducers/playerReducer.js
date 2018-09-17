@@ -6,7 +6,8 @@
 const initialState = {
     piecesIn: [], 
     piecesOut: [],
-    inCheck: false
+    inCheck: false,
+    isTurn: false
 };
 
 const rootReducer = (state = initialState, action) => {

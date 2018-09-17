@@ -7,7 +7,6 @@ import Board from '../components/Board';
 class Game extends Component {
     render() {
         const { player } = this.props;
-        console.log(player.inCheck);
         return (
             <div>
                 <Board />

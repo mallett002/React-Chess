@@ -1,35 +1,28 @@
 import React, { Component } from 'react';
+import Box from './Box';
+import King from './King';
 
 // Board will have width and height of 8 X 8
 // Will be a set of divs with x, y coordinates
 class Board extends Component {
 
-    componentDidMount() {
-        // When component mounts, we'll create some boxes and insert them into "board"
-        let board = document.getElementById("board");
-        let boxes = document.createElement("div");
-        boxes.className = "boxes";
-        boxes.style.margin = '0 auto';
-        
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                let box = document.createElement("div");
-                box.style.display = 'inline-block';
-                box.className = 'box';
-                box.style.width = 12.5 + "%";
-                box.style.height = 10 + "vw";
-                box.style.margin = 0;
-                box.id = `${x}${y}`;
-                box.style.background = (x + y) % 2 === 0 ? '#67a567' : '#c5c5c5';
-                boxes.appendChild(box);
-            }
-        }
-        board.appendChild(boxes);
-    }
-
     render() {
+        const places = [
+            "0,0", "1,0", "2,0", "3,0", "4,0", "5,0", "6,0", "7,0",
+            "0,1", "1,1", "2,1", "3,1", "4,1", "5,1", "6,1", "7,1",
+            "0,2", "1,2", "2,2", "3,2", "4,2", "5,2", "6,2", "7,2",
+            "0,3", "1,3", "2,3", "3,3", "4,3", "5,3", "6,3", "7,3",
+            "0,4", "1,4", "2,4", "3,4", "4,4", "5,4", "6,4", "7,4",
+            "0,5", "1,5", "2,5", "3,5", "4,5", "5,5", "6,5", "7,5",
+            "0,6", "1,6", "2,6", "3,6", "4,6", "5,6", "6,6", "7,6",
+            "0,7", "1,7", "2,7", "3,7", "4,7", "5,7", "6,7", "7,7"
+        ];
         return (
-            <div id='board'></div>
+            <div id='board'>{
+                places.map((p, i) => {
+                    return <Box key={i} place={p} />
+                })
+            }</div>
         )
     }
 }
