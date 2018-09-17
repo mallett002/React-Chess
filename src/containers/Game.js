@@ -6,11 +6,11 @@ import Board from '../components/Board';
 
 class Game extends Component {
     render() {
-        const { player } = this.props;
-        console.log(player.inCheck);
+        const { player, computer, board } = this.props;
+
         return (
             <div>
-                <Board />
+                <Board computer={computer} player={player} board={board} />
                 <p>The player is in check? {String(player.inCheck)}</p>
                 <Link exact='true' to='/'>Back</Link>
             </div>
@@ -20,12 +20,14 @@ class Game extends Component {
 
 const mapStateToProps = state => ({
     computer: state.computer,
-    player: state.player
+    player: state.player,
+    board: state.board
 });
 
 Game.propTypes = {
     computer: PropTypes.object.isRequired,
-    player: PropTypes.object.isRequired
+    player: PropTypes.object.isRequired,
+    board: PropTypes.array.isRequired
 };
 
 export default connect(mapStateToProps)(Game);
