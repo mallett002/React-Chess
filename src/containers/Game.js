@@ -7,7 +7,6 @@ import Board from '../components/Board';
 class Game extends Component {
     render() {
         const { player, computer, board } = this.props;
-        console.log(player.selected);
         return (
             <div>
                 <Board computer={computer} player={player} board={board} />
@@ -27,7 +26,7 @@ const mapStateToProps = state => ({
 Game.propTypes = {
     computer: PropTypes.object.isRequired,
     player: PropTypes.object.isRequired,
-    board: PropTypes.array.isRequired
+    board: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps)(Game);

@@ -8,12 +8,12 @@ import King from './King';
 class Board extends Component {
 
     render() {
-        const { board } = this.props;
+        const { board, player } = this.props;
         
         return (
             <div id='board'>{
-                board.map((p, i) => {
-                    return <Box key={i} piece={p} place={i} />
+                board.board.map((p, i) => {
+                    return <Box key={i} piece={p} place={i} user={player} board={board} />
                 })
             }</div>
         )
@@ -21,7 +21,7 @@ class Board extends Component {
 }
 
 Board.propTypes = {
-    board: PropTypes.array.isRequired
+    board: PropTypes.object.isRequired
 };
 
 export default Board;
