@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 // Constants
 import { isLight } from '../constants/constants';
+import { selectPiece } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -12,7 +14,26 @@ import Knight from './Knight';
 import Pawn from './Pawn';
 
 
-export default class Box extends Component {
+ class Box extends Component {
+  constructor(props) {
+    super(props);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.moveTo = this.moveTo.bind(this);
+  }
+
+  handleSelect() {
+    // if the square has a piece in it
+    const { piece, selectPiece } = this.props;
+    if (piece.name !== "empty") {
+      // dispatch an action with the piece
+      selectPiece(piece);
+    }
+  };
+
+  moveTo() {
+    // if a piece is selected
+    // click another square to replace its contents with the selected one
+  };
 
   render() {
 
@@ -20,6 +41,7 @@ export default class Box extends Component {
 
     return (
       <div className="box"
+        onClick={this.handleSelect}
         style={isLight(place)
             ? {background: '#eaeaea'} 
             : {background: '#6b906b'}}
@@ -45,3 +67,5 @@ Box.propTypes = {
     piece: PropTypes.object.isRequired,
     place: PropTypes.number.isRequired
 };
+
+export default connect(null, { selectPiece })(Box);

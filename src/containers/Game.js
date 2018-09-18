@@ -7,7 +7,7 @@ import Board from '../components/Board';
 class Game extends Component {
     render() {
         const { player, computer, board } = this.props;
-
+        console.log(player.selected);
         return (
             <div>
                 <Board computer={computer} player={player} board={board} />
