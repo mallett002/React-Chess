@@ -29,7 +29,9 @@ class Board extends Component {
                 board.layout.map((p, i) => {
                     return <Box 
                         key={i} piece={p} place={i} 
-                        user={player} board={board} handleMove={this.handleMove}/>
+                        user={player} board={board} 
+                        handleMove={this.handleMove}
+                    />
                 })
             }</div>
         )
