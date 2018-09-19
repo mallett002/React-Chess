@@ -14,7 +14,8 @@ export const deselect = () => ({
 });
 
 // Move a piece
-export const moveTo = (piece, index) => ({
+// TODO- Make moveTo take in (from, to)
+export const moveTo = (from, to) => ({
     type: PIECE_MOVED,
-    payload: { piece: piece, index: index }
+    payload: { from: from, to: to }
 });

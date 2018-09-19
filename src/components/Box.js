@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
 import { isLight } from '../constants/constants';
-import { selectPiece, moveTo, deselect } from '../actions/actions';
+import { selectPiece, deselect } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -21,10 +21,7 @@ class Box extends Component {
   }
 
   handleClick() {
-    const { piece, selectPiece, deselect, place, board } = this.props;
-    const boxCollection = document.querySelectorAll(".box");
-    const boxes = [...boxCollection];
-    let clicked = boxes[place];
+    const { piece, selectPiece, deselect, handleMove, place, board } = this.props;
 
     // if state.selected is null & the selected square has a piece in it
     if (board.selected === null) {
@@ -42,8 +39,10 @@ class Box extends Component {
 
     // Can't select another square, only deslect the selected one
     // if a diff square is clicked, fire a moveTo action
-    if (board.selected !== null && place !== board.selected.id) {
+    if (board.selected !== null && board.selected.id !== piece.id) {
       console.log(`Piece at ${board.selected.id} needs to move to ${place}`);
+      // insert "selected" into "place"
+      handleMove(board.selected.id, place);
     }
   };
 
@@ -80,4 +79,4 @@ Box.propTypes = {
   place: PropTypes.number.isRequired
 };
 
-export default connect(null, { selectPiece, deselect, moveTo })(Box);
+export default connect(null, { selectPiece, deselect})(Box);
