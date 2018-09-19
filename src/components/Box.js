@@ -23,6 +23,10 @@ class Box extends Component {
   handleClick() {
     const { piece, selectPiece, deselect, handleMove, place, board } = this.props;
 
+    // if piece is an empty one, and none are currently selected, do nothing
+    if (piece.name === "empty" && board.selected === null) {
+      return null;
+    }
     // if state.selected is null & the selected square has a piece in it
     if (board.selected === null) {
       // dispatch an action with the piece
