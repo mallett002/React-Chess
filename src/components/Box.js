@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 // Constants
 import { isLight } from '../constants/constants';
+import { selectPiece, deselect } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -12,7 +14,37 @@ import Knight from './Knight';
 import Pawn from './Pawn';
 
 
-export default class Box extends Component {
+class Box extends Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    const { piece, selectPiece, deselect, handleMove, place, board } = this.props;
+
+    // if state.selected is null & the selected square has a piece in it
+    if (board.selected === null) {
+      // dispatch an action with the piece
+      selectPiece(piece);
+      // Listen for click on any other box
+      // if clicked and selected is true, send selected there
+    }
+
+    // If selected box is clicked again
+    if (board.selected !== null && place === board.selected.id) {
+        // update selected to be empty again
+        deselect();
+    }
+
+    // Can't select another square, only deslect the selected one
+    // if a diff square is clicked, fire a moveTo action
+    if (board.selected !== null && board.selected.id !== piece.id) {
+      console.log(`Piece at ${board.selected.id} needs to move to ${place}`);
+      // insert "selected" into "place"
+      handleMove(board.selected.id, place);
+    }
+  };
 
   render() {
 
@@ -20,28 +52,31 @@ export default class Box extends Component {
 
     return (
       <div className="box"
+        onClick={this.handleClick}
         style={isLight(place)
-            ? {background: '#eaeaea'} 
-            : {background: '#6b906b'}}
+          ? { background: '#eaeaea' }
+          : { background: '#6b906b' }}
       >
         {piece.name === "king" && piece.team === "computer" && <King user={"black"} />}
-        {piece.name === "king" && piece.team === "player" && <King user={"white"} />} 
-        {piece.name === "queen" && piece.team === "computer" && <Queen user={"black"} />} 
-        {piece.name === "queen" && piece.team === "player" && <Queen user={"white"} />} 
-        {piece.name === "rook" && piece.team === "computer" && <Rook user={"black"} />} 
-        {piece.name === "rook" && piece.team === "player" && <Rook user={"white"} />} 
-        {piece.name === "bishop" && piece.team === "computer" && <Bishop user={"black"} />} 
-        {piece.name === "bishop" && piece.team === "player" && <Bishop user={"white"} />} 
-        {piece.name === "knight" && piece.team === "computer" && <Knight user={"black"} />} 
-        {piece.name === "knight" && piece.team === "player" && <Knight user={"white"} />} 
-        {piece.name === "pawn" && piece.team === "computer" && <Pawn user={"black"} />} 
-        {piece.name === "pawn" && piece.team === "player" && <Pawn user={"white"} />} 
+        {piece.name === "king" && piece.team === "player" && <King user={"white"} />}
+        {piece.name === "queen" && piece.team === "computer" && <Queen user={"black"} />}
+        {piece.name === "queen" && piece.team === "player" && <Queen user={"white"} />}
+        {piece.name === "rook" && piece.team === "computer" && <Rook user={"black"} />}
+        {piece.name === "rook" && piece.team === "player" && <Rook user={"white"} />}
+        {piece.name === "bishop" && piece.team === "computer" && <Bishop user={"black"} />}
+        {piece.name === "bishop" && piece.team === "player" && <Bishop user={"white"} />}
+        {piece.name === "knight" && piece.team === "computer" && <Knight user={"black"} />}
+        {piece.name === "knight" && piece.team === "player" && <Knight user={"white"} />}
+        {piece.name === "pawn" && piece.team === "computer" && <Pawn user={"black"} />}
+        {piece.name === "pawn" && piece.team === "player" && <Pawn user={"white"} />}
       </div>
     )
   }
 }
 
 Box.propTypes = {
-    piece: PropTypes.object.isRequired,
-    place: PropTypes.number.isRequired
+  piece: PropTypes.object.isRequired,
+  place: PropTypes.number.isRequired
 };
+
+export default connect(null, { selectPiece, deselect})(Box);

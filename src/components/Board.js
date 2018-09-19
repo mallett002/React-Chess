@@ -2,18 +2,34 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Box from './Box';
 import King from './King';
+import { connect } from 'react-redux';
+import { moveTo } from '../actions/actions';
 
 // Board will have width and height of 8 X 8
 // Will be a set of divs with x, y coordinates
 class Board extends Component {
+    constructor(props) {
+        super(props);
+        this.handleMove = this.handleMove.bind(this);
+    }
+
+    // Dispatches an action to move the piece
+    handleMove(from, to) {
+        console.log("handling move");
+        const { moveTo } = this.props;
+        moveTo(from, to);
+    }
 
     render() {
-        const { board } = this.props;
+        const { board, player } = this.props;
         console.log(board);
+        
         return (
             <div id='board'>{
-                board.map((p, i) => {
-                    return <Box key={i} piece={p} place={i} />
+                board.layout.map((p, i) => {
+                    return <Box 
+                        key={i} piece={p} place={i} 
+                        user={player} board={board} handleMove={this.handleMove}/>
                 })
             }</div>
         )
@@ -21,7 +37,7 @@ class Board extends Component {
 }
 
 Board.propTypes = {
-    board: PropTypes.array.isRequired
+    board: PropTypes.object.isRequired
 };
 
-export default Board;
+export default connect(null, { moveTo })(Board);

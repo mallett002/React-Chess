@@ -1,6 +1,6 @@
 // Whole state of game saved in the Redux store.
 // Want to know which pieces are in the game still, and where they're located on the board.
-// Want to know which pieces are out to display them in a list of "fallen soldiers"
+// Want to know which pieces are out in order to display them in a list of "fallen soldiers"
 // Want to know if a king is in check 
 
 const initialState = {
