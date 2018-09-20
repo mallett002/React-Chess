@@ -1,10 +1,10 @@
-// Whole state of game saved in the Redux store.
-// Want to know which pieces are in the game still, and where they're located on the board.
+import { PIECE_TAKEN } from '../actions/actions';
+
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
 // Want to know if a king is in check
+// Want to know if it's this player's turn
 
 const initialState = {
-    piecesIn: [], 
     piecesOut: [],
     inCheck: false,
     isTurn: false
@@ -12,13 +12,10 @@ const initialState = {
 
 const computerReducer = (state = initialState, action) => {
     switch (action.type) {
-        case "PIECE_LOST":
+        case PIECE_TAKEN:
             return {
                 ...state,
-                // piecesIn without the one that was taken
-                piecesIn: piecesIn.filter(p => p !== action.payload.piece),
-                // add piece to piecesOut list
-                piecesOut: piecesOut.push(action.payload.piece)
+                piecesOut: [...state.piecesOut, action.payload]
             }
         case "PUT_IN_CHECK":
             return {
