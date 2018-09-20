@@ -18,7 +18,7 @@ let initialState = {
     {name:"queen", team:"player", id:59},{name:"king", team:"player", id:60}, {name:"bishop", team:"player", id:61}, 
     {name:"knight", team:"player", id:62}, {name:"rook", team:"player", id:63}
   ],
-  selected: null // or something like: {name:"bishop", team:"player", id:58} 
+  selected: null // or something like: {piece: {name:"bishop", team:"player", id:58}, place: 55}
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -31,12 +31,14 @@ const boardReducer = (state = initialState, action) => {
         case DESELECT:
             return {
                 ...state,
+                // set selected back to null
                 selected: null
             }
         case PIECE_MOVED:
             return {
                 ...state,
-                ...state.layout[action.payload.to] = state.selected,
+                // layout at index "to" is the selected piece
+                ...state.layout[action.payload.to] = state.selected.piece,
                 // set index of "from" to be an "empty" one
                 ...state.layout[action.payload.from] = {name:"empty"},
                 selected: null
