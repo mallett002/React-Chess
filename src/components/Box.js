@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
 import { isLight } from '../constants/constants';
-import { selectPiece, deselect } from '../actions/actions';
+import { selectPiece, deselect, addToFallen } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -24,7 +24,7 @@ class Box extends Component {
     // place is index of the box in the layout
     // piece is the data in that index
     // board is the Redux store for the board
-    const { piece, selectPiece, deselect, handleMove, place, board } = this.props;
+    const { piece, place, board, selectPiece, deselect, handleMove, addToFallen } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -45,6 +45,8 @@ class Box extends Component {
 
     // If selected, and if place !== current location, fire a moveTo action
     if (board.selected !== null && place !== board.selected.index) {
+      // If new place has a piece, add that to the fallen list
+      if (piece.name !== "empty") addToFallen(piece);
       // insert "selected" into "place"
       handleMove(board.selected.index, place);
     }
@@ -83,4 +85,4 @@ Box.propTypes = {
   place: PropTypes.number.isRequired
 };
 
-export default connect(null, { selectPiece, deselect})(Box);
+export default connect(null, { selectPiece, deselect, addToFallen })(Box);
