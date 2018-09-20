@@ -25,3 +25,5 @@ export const addToFallen = (piece) => ({
     type: PIECE_TAKEN,
     payload: piece
 });
+
+// TODO- addUserInfo action

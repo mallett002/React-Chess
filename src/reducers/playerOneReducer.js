@@ -5,12 +5,14 @@ import { PIECE_TAKEN } from '../actions/actions';
 // Want to know if it's this player's turn
 
 const initialState = {
+    color: '',
+    userName: '',
     piecesOut: [],
     inCheck: false,
     isTurn: false
 };
 
-const computerReducer = (state = initialState, action) => {
+const playerOneReducer = (state = initialState, action) => {
     switch (action.type) {
         case PIECE_TAKEN:
             return {
@@ -27,4 +29,4 @@ const computerReducer = (state = initialState, action) => {
     }
 };
 
-export default computerReducer;
+export default playerOneReducer;

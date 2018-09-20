@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import playerReducer from './playerReducer';
-import computerReducer from './computerReducer';
+import playerOneReducer from './playerOneReducer';
+import playerTwoReducer from './playerTwoReducer';
 import boardReducer from './boardReducer';
 
 export default combineReducers({
-    player: playerReducer,
-    computer: computerReducer,
+    player1: playerOneReducer,
+    player2: playerTwoReducer,
     board: boardReducer
 });
