@@ -22,7 +22,6 @@ class Board extends Component {
 
     render() {
         const { board, player } = this.props;
-        console.log(board);
         
         return (
             <div id='board'>{

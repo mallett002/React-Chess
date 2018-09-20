@@ -14,3 +14,9 @@ export const isEven = (n) => {
     if (n % 2 === 0) return true;
     else return false;
 }
+
+export const findIndex = (n, array) => {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i].id === n) return i;
+    }
+}

@@ -3,9 +3,9 @@ export const PIECE_MOVED = 'PIECE_MOVED';
 export const DESELECT = 'DESELECT';
 
 // When a piece is selected
-export const selectPiece = (piece) => ({
+export const selectPiece = (piece, place) => ({
     type: PIECE_SELECTED,
-    payload: piece
+    payload: {piece: piece, index: place}
 });
 
 // Deselect a selected piece
@@ -14,8 +14,13 @@ export const deselect = () => ({
 });
 
 // Move a piece
-// TODO- Make moveTo take in (from, to)
 export const moveTo = (from, to) => ({
     type: PIECE_MOVED,
     payload: { from: from, to: to }
+});
+
+// Add to "fallen soldiers" list
+export const addToFallen = () => ({
+    type: PIECE_TAKEN,
+    
 });

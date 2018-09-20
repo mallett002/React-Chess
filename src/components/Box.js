@@ -21,32 +21,32 @@ class Box extends Component {
   }
 
   handleClick() {
+    // place is index of the box in the layout
+    // piece is the data in that index
+    // board is the Redux store for the board
     const { piece, selectPiece, deselect, handleMove, place, board } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
       return null;
     }
+
     // if state.selected is null & the selected square has a piece in it
     if (board.selected === null) {
-      // dispatch an action with the piece
-      selectPiece(piece);
-      // Listen for click on any other box
-      // if clicked and selected is true, send selected there
+      // dispatch an action with the piece and it's current location
+      selectPiece(piece, place);
     }
 
-    // If selected box is clicked again
-    if (board.selected !== null && place === board.selected.id) {
+    // If selected box is clicked again, deselect it
+    if (board.selected !== null && place === board.selected.index) {
         // update selected to be empty again
         deselect();
     }
 
-    // Can't select another square, only deslect the selected one
-    // if a diff square is clicked, fire a moveTo action
-    if (board.selected !== null && board.selected.id !== piece.id) {
-      console.log(`Piece at ${board.selected.id} needs to move to ${place}`);
+    // If selected, and if place !== current location, fire a moveTo action
+    if (board.selected !== null && place !== board.selected.index) {
       // insert "selected" into "place"
-      handleMove(board.selected.id, place);
+      handleMove(board.selected.index, place);
     }
   };
 
