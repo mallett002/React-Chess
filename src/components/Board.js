@@ -15,7 +15,6 @@ class Board extends Component {
 
     // Dispatches an action to move the piece
     handleMove(from, to) {
-        console.log("handling move");
         const { moveTo } = this.props;
         moveTo(from, to);
     }
@@ -27,8 +26,9 @@ class Board extends Component {
             <div id='board'>{
                 board.layout.map((p, i) => {
                     return <Box 
-                        key={i} piece={p} place={i} board={board} 
-                        handleMove={this.handleMove} user1={player1} user2={player2}
+                        key={i} piece={p} place={i} 
+                        board={board} handleMove={this.handleMove} 
+                        player1={player1} player2={player2}
                     />
                 })
             }</div>

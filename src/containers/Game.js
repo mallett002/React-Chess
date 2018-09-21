@@ -10,7 +10,7 @@ import FallenSoldiers from '../components/FallenSoldiers';
 class Game extends Component {
     render() {
         const { player1, player2, board } = this.props;
-        console.log(player1);
+        
         return (
             <div>
                 <Board player1={player1} player2={player2} board={board} />
