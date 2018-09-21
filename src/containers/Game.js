@@ -9,14 +9,13 @@ import FallenSoldiers from '../components/FallenSoldiers';
 // Renders the board, the fallen soldiers lists, and a link back to exit the game
 class Game extends Component {
     render() {
-        const { player, computer, board } = this.props;
-
+        const { player1, player2, board } = this.props;
+        console.log(player1);
         return (
             <div>
-                <Board computer={computer} player={player} board={board} />
-                <p>The player is in check? {String(player.inCheck)}</p>
-                <FallenSoldiers user={player} />
-                <FallenSoldiers user={computer} />
+                <Board player1={player1} player2={player2} board={board} />
+                <FallenSoldiers user={player1} />
+                <FallenSoldiers user={player2} />
                 <Link exact='true' to='/'>Back</Link>
             </div>
         )
@@ -24,14 +23,14 @@ class Game extends Component {
 }
 
 const mapStateToProps = state => ({
-    computer: state.computer,
-    player: state.player,
+    player1: state.player1,
+    player2: state.player2,
     board: state.board
 });
 
 Game.propTypes = {
-    computer: PropTypes.object.isRequired,
-    player: PropTypes.object.isRequired,
+    player1: PropTypes.object.isRequired,
+    player2: PropTypes.object.isRequired,
     board: PropTypes.object.isRequired
 };
 

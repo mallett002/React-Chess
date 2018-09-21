@@ -2,6 +2,7 @@ export const PIECE_SELECTED = 'PIECE_SELECTED';
 export const PIECE_MOVED = 'PIECE_MOVED';
 export const DESELECT = 'DESELECT';
 export const PIECE_TAKEN = 'PIECE_TAKEN';
+export const PLAYERS_ADDED = 'PLAYERS_ADDED';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -26,4 +27,7 @@ export const addToFallen = (piece) => ({
     payload: piece
 });
 
-// TODO- addUserInfo action
+export const addUserInfo = (player1, player2) => ({
+    type: PLAYERS_ADDED,
+    payload: {player1, player2}
+});

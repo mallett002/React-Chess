@@ -38,19 +38,16 @@ class SetUpGame extends Component {
 
     handleColor(e) {
         const { player1, player2 } = this.state;
-        console.log("e.target.value", e.target.value);
         // Set player one's color to selected value
 
         // Make player2's color opposite of p1
         if (e.target.value === "white") {
-            console.log("updating p2 to black");
             this.setState({
                 player1: { userName: player1.userName, color: e.target.value },
                 player2: { userName: player2.userName, color: "black" }
             });
         // otherwise it's black
         } else { 
-            console.log("updating p2 to white");
             this.setState({
                 player1: { userName: player1.userName, color: e.target.value },
                 player2: { userName: player2.userName, color: "white" }
@@ -58,23 +55,22 @@ class SetUpGame extends Component {
         }
     }
 
-    handleSubmit(e) {
-        e.preventDefualt();
+    handleSubmit() {
         // Dispatch an action with the info
         // addUserInfo(player1, player2)
-        addUserInfo(this.state.player1, this.state.player2);
+        this.props.addUserInfo(this.state.player1, this.state.player2);
+        console.log("action dispatched");
     }
 
     render() {
         const { player1, player2 } = this.props;
-        console.log("State is:", this.state);
 
         return (
             <div>
                 <h1>REACT CHESS</h1>
                 <h3>GAME SETUP</h3>
 
-                <form onSubmit={this.handleSubmit}>
+                <form>
                     <PlayerSetup user="Player One" id="player1"
                         updateUserName={this.userNameOne}
                         handleColor={this.handleColor}
@@ -86,8 +82,7 @@ class SetUpGame extends Component {
                     />
 
                     <Link to="/game">
-                        <button
-                            type="submit"
+                        <button onClick={this.handleSubmit}
                         >START GAME
                     </button>
                     </Link>

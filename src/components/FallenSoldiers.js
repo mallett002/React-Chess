@@ -8,7 +8,6 @@ import King from './King';
 // User is the Redux store for the given user.
 const FallenSoldiers = ({ user }) => {
     const { piecesOut } = user;
-    console.log(piecesOut);
     return (
         <div className='fallen'>
             <ul>

@@ -1,4 +1,4 @@
-import { PIECE_TAKEN } from '../actions/actions';
+import { PIECE_TAKEN, PLAYERS_ADDED  } from '../actions/actions';
 
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
 // Want to know if a king is in check
@@ -14,6 +14,12 @@ const initialState = {
 
 const playerTwoReducer = (state = initialState, action) => {
     switch (action.type) {
+        case PLAYERS_ADDED:
+        return {
+            ...state,
+            color: action.payload.player2.color,
+            userName: action.payload.player2.userName
+        }
         case PIECE_TAKEN:
             return {
                 ...state,
