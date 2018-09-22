@@ -1,4 +1,7 @@
-
+/*Core Styles*/
+li {
+    list-style: none;
+}
 
 /*BOARD --------------*/
 
@@ -22,13 +25,45 @@
     cursor: pointer
 }
 
-#black-king {
-    margin: 0;
-    font-size: 1.9em;
-}
-
 .piece {
     font-size: 10vw;
     position: relative;
     bottom: 9%;
+}
+
+/*Fallen Soldiers--------*/
+.fallen-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /*Will be same width as the board*/
+    margin-top: 1em;
+}
+
+.player {
+    text-align: center;
+}
+
+.fallen-list {
+    border: 1px solid #eaeaea;
+    width: 48%;
+}
+
+.fallen-list ul {
+    padding: 0;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.fallen-piece {
+    margin: 0;
+    font-size: 20px;
+}
+
+
+/*MEDIA QUERIES---------------------*/
+@media screen and (min-width: 500px) {
+    /*Fallen Soldiers*/
+    .fallen-piece {
+        font-size: 30px;
+    }
 }

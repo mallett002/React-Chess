@@ -3,13 +3,16 @@ import React, { Component } from 'react';
 class Rook extends Component {
 
     render() {
-        const { user } = this.props;
+        const { user, fallen } = this.props;
         return (
-            user === "black" 
-                ? <p className="piece black">{String.fromCharCode(9820)}</p>
-                : <p className="piece white">{String.fromCharCode(9814)}</p>
+            <p className={['piece', this.props.fallen && 'fallen-piece'].join(' ')}>
+                {user.color === "black"
+                    ? String.fromCharCode(9820)
+                    : String.fromCharCode(9814)}
+            </p>
         )
     }
 }
 
 export default Rook;
+

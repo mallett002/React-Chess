@@ -54,7 +54,7 @@ class Box extends Component {
 
   render() {
 
-    const { piece, place } = this.props;
+    const { piece, place, player1, player2 } = this.props;
 
     return (
       <div className="box"
@@ -63,18 +63,18 @@ class Box extends Component {
           ? { background: '#eaeaea' }
           : { background: '#6b906b' }}
       >
-        {piece.name === "king" && piece.team === "computer" && <King user={"black"} />}
-        {piece.name === "king" && piece.team === "player" && <King user={"white"} />}
-        {piece.name === "queen" && piece.team === "computer" && <Queen user={"black"} />}
-        {piece.name === "queen" && piece.team === "player" && <Queen user={"white"} />}
-        {piece.name === "rook" && piece.team === "computer" && <Rook user={"black"} />}
-        {piece.name === "rook" && piece.team === "player" && <Rook user={"white"} />}
-        {piece.name === "bishop" && piece.team === "computer" && <Bishop user={"black"} />}
-        {piece.name === "bishop" && piece.team === "player" && <Bishop user={"white"} />}
-        {piece.name === "knight" && piece.team === "computer" && <Knight user={"black"} />}
-        {piece.name === "knight" && piece.team === "player" && <Knight user={"white"} />}
-        {piece.name === "pawn" && piece.team === "computer" && <Pawn user={"black"} />}
-        {piece.name === "pawn" && piece.team === "player" && <Pawn user={"white"} />}
+        {piece.name === "king" && piece.team === "player2" && <King user={player2} />}
+        {piece.name === "king" && piece.team === "player1" && <King user={player1} />}
+        {piece.name === "queen" && piece.team === "player2" && <Queen user={player2} />}
+        {piece.name === "queen" && piece.team === "player1" && <Queen user={player1} />}
+        {piece.name === "rook" && piece.team === "player2" && <Rook user={player2} />}
+        {piece.name === "rook" && piece.team === "player1" && <Rook user={player1} />}
+        {piece.name === "bishop" && piece.team === "player2" && <Bishop user={player2} />}
+        {piece.name === "bishop" && piece.team === "player1" && <Bishop user={player1} />}
+        {piece.name === "knight" && piece.team === "player2" && <Knight user={player2} />}
+        {piece.name === "knight" && piece.team === "player1" && <Knight user={player1} />}
+        {piece.name === "pawn" && piece.team === "player2" && <Pawn user={player2} />}
+        {piece.name === "pawn" && piece.team === "player1" && <Pawn user={player1} />}
       </div>
     )
   }

@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 class King extends Component {
 
     render() {
-        const { user } = this.props;
+        const { user, fallen } = this.props;
         return (
-            user === "black" 
-                ? <p className="piece black">{String.fromCharCode(9818)}</p>
-                : <p className="piece white">{String.fromCharCode(9812)}</p>
+            <p className={['piece', this.props.fallen && 'fallen-piece'].join(' ')}>
+                {user.color === "black"
+                    ? String.fromCharCode(9818)
+                    : String.fromCharCode(9812)}
+            </p>
         )
     }
 }

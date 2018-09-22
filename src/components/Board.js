@@ -15,21 +15,20 @@ class Board extends Component {
 
     // Dispatches an action to move the piece
     handleMove(from, to) {
-        console.log("handling move");
         const { moveTo } = this.props;
         moveTo(from, to);
     }
 
     render() {
-        const { board, player } = this.props;
+        const { board, player1, player2 } = this.props;
         
         return (
             <div id='board'>{
                 board.layout.map((p, i) => {
                     return <Box 
                         key={i} piece={p} place={i} 
-                        user={player} board={board} 
-                        handleMove={this.handleMove}
+                        board={board} handleMove={this.handleMove} 
+                        player1={player1} player2={player2}
                     />
                 })
             }</div>
@@ -38,7 +37,9 @@ class Board extends Component {
 }
 
 Board.propTypes = {
-    board: PropTypes.object.isRequired
+    board: PropTypes.object.isRequired,
+    player1: PropTypes.object.isRequired,
+    player2: PropTypes.object.isRequired
 };
 
 export default connect(null, { moveTo })(Board);
