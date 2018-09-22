@@ -18,7 +18,7 @@ let initialState = {
     {name:"queen", team:"player1", id:59},{name:"king", team:"player1", id:60}, {name:"bishop", team:"player1", id:61}, 
     {name:"knight", team:"player1", id:62}, {name:"rook", team:"player1", id:63}
   ],
-  selected: null // or something like: {piece: {name:"bishop", team:"player", id:58}, place: 55}
+  selected: null // or something like: {piece: {name:"bishop", team:"player1", id:58}, place: 55}
 };
 
 const boardReducer = (state = initialState, action) => {

@@ -23,8 +23,9 @@ class Box extends Component {
   handleClick() {
     // place is index of the box in the layout
     // piece is the data in that index
+    // coords is an array of the x, y coords of the board
     // board is the Redux store for the board
-    const { piece, place, board, selectPiece, deselect, handleMove, addToFallen } = this.props;
+    const { piece, coords, place, board, selectPiece, deselect, handleMove, addToFallen } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -43,8 +44,9 @@ class Box extends Component {
         deselect();
     }
 
-    // If selected, and if place !== current location, fire a moveTo action
-    if (board.selected !== null && place !== board.selected.index) {
+    // If selected, if place !== current location, 
+    // And if piece isn't on same team, and if is a valid route, fire a moveTo action
+    if (board.selected !== null && place !== board.selected.index && piece.team !== board.selected.piece.team) {
       // If new place has a piece, add that to the fallen list
       if (piece.name !== "empty") addToFallen(piece);
       // insert "selected" into "place"

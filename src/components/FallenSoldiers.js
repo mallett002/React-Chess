@@ -12,7 +12,6 @@ import Pawn from './Pawn';
 // Displays a list of lost pieces for the user.
 // User is the Redux store for the given user.
 const FallenSoldiers = ({ user }) => {
-    console.log("user:", user);
     const { piecesOut } = user;
     return (
         <div className='fallen-list'>

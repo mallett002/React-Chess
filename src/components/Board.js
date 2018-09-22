@@ -4,6 +4,7 @@ import Box from './Box';
 import King from './King';
 import { connect } from 'react-redux';
 import { moveTo } from '../actions/actions';
+import { isLight, makeCoords } from '../constants/constants';
 
 // Board will have width and height of 8 X 8
 // Will be a set of divs with x, y coordinates
@@ -21,13 +22,13 @@ class Board extends Component {
 
     render() {
         const { board, player1, player2 } = this.props;
-        
+
         return (
             <div id='board'>{
                 board.layout.map((p, i) => {
-                    return <Box 
-                        key={i} piece={p} place={i} 
-                        board={board} handleMove={this.handleMove} 
+                    return <Box coords={makeCoords(i)}
+                        key={i} piece={p} place={i}
+                        board={board} handleMove={this.handleMove}
                         player1={player1} player2={player2}
                     />
                 })
