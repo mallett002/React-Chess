@@ -10,14 +10,18 @@ import FallenSoldiers from '../components/FallenSoldiers';
 class Game extends Component {
     render() {
         const { player1, player2, board } = this.props;
-        
+        console.log(player1);
         return (
-            <div>
+            <div className='game'>
+                {/*TODO- If in check, show here. "Will is in check!" something red*/}
                 <Board player1={player1} player2={player2} board={board} />
-                <FallenSoldiers user={player1} />
-                <FallenSoldiers user={player2} />
-                <Link exact='true' to='/'>Back</Link>
+                <div className='fallen-container'>
+                    <FallenSoldiers user={player1} />
+                    <FallenSoldiers user={player2} />
+                </div>
+                <Link exact='true' to='/'>Exit Game</Link>
             </div>
+
         )
     }
 }

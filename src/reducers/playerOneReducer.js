@@ -5,6 +5,7 @@ import { PIECE_TAKEN, PLAYERS_ADDED } from '../actions/actions';
 // Want to know if it's this player's turn
 
 const initialState = {
+    team: 'player1',
     color: '',
     userName: '',
     piecesOut: [],
@@ -23,7 +24,8 @@ const playerOneReducer = (state = initialState, action) => {
         case PIECE_TAKEN:
             return {
                 ...state,
-                piecesOut: [...state.piecesOut, action.payload]
+                // make sure piece belongs to this team before adding to piecesOut
+                piecesOut: [...state.piecesOut, action.payload.team === state.team && action.payload]
             }
         case "PUT_IN_CHECK":
             return {
