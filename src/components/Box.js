@@ -21,11 +21,11 @@ class Box extends Component {
   }
 
   handleClick() {
-    // place is index of the box in the layout
+    // index is index of the box in the layout
     // piece is the data in that index
     // coords is an array of the x, y coords of the board
     // board is the Redux store for the board
-    const { piece, coords, place, board, selectPiece, deselect, handleMove, addToFallen } = this.props;
+    const { piece, coords, index, board, selectPiece, deselect, handleMove, addToFallen } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -35,33 +35,40 @@ class Box extends Component {
     // if state.selected is null & the selected square has a piece in it
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
-      selectPiece(piece, place);
+      selectPiece(piece, index);
     }
 
     // If selected box is clicked again, deselect it
-    if (board.selected !== null && place === board.selected.index) {
-        // update selected to be empty again
-        deselect();
+    if (board.selected !== null && index === board.selected.index) {
+      // update selected to be empty again
+      deselect();
     }
 
-    // If selected, if place !== current location, 
-    // And if piece isn't on same team, and if is a valid route, fire a moveTo action
-    if (board.selected !== null && place !== board.selected.index && piece.team !== board.selected.piece.team) {
-      // If new place has a piece, add that to the fallen list
-      if (piece.name !== "empty") addToFallen(piece);
-      // insert "selected" into "place"
-      handleMove(board.selected.index, place);
+    // If a piece is selected, & if clicked box is different than the selected one
+    if (board.selected !== null && index !== board.selected.index) {
+      // If new index has a piece, and it's on the other team, add that to the fallen list
+      if (piece.name !== "empty" && piece.team !== board.selected.piece.team) {
+        addToFallen(piece);
+        // insert "selected" into "index"
+        handleMove(board.selected.index, index);
+      }
+
+      // if new index doesn't have a piece, just send it to that empty spot
+      if (piece.name === "empty") {
+        handleMove(board.selected.index, index);
+      }
+
     }
   };
 
   render() {
 
-    const { piece, place, player1, player2 } = this.props;
+    const { piece, index, player1, player2 } = this.props;
 
     return (
-      <div className="box"
+      <div className="box" id={index}
         onClick={this.handleClick}
-        style={isLight(place)
+        style={isLight(index)
           ? { background: '#eaeaea' }
           : { background: '#6b906b' }}
       >
@@ -84,7 +91,7 @@ class Box extends Component {
 
 Box.propTypes = {
   piece: PropTypes.object.isRequired,
-  place: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired
 };
 
 export default connect(null, { selectPiece, deselect, addToFallen })(Box);

@@ -22,7 +22,12 @@ li {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.valid-move {
+    border: 5px solid #2aca30;
 }
 
 .piece {

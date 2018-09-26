@@ -3,6 +3,7 @@ export const PIECE_MOVED = 'PIECE_MOVED';
 export const DESELECT = 'DESELECT';
 export const PIECE_TAKEN = 'PIECE_TAKEN';
 export const PLAYERS_ADDED = 'PLAYERS_ADDED';
+export const SHOW_MOVE = 'SHOW_MOVE';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -27,7 +28,14 @@ export const addToFallen = (piece) => ({
     payload: piece
 });
 
+// Add user names and colors
 export const addUserInfo = (player1, player2) => ({
     type: PLAYERS_ADDED,
     payload: {player1, player2}
+});
+
+// add indices that a given piece can move to
+export const showMove = validIndices => ({
+    type: SHOW_MOVE,
+    payload: validIndices
 });
