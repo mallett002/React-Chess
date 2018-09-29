@@ -10,7 +10,6 @@ import FallenSoldiers from '../components/FallenSoldiers';
 class Game extends Component {
     render() {
         const { player1, player2, board } = this.props;
-        console.log(player1);
         return (
             <div className='game'>
                 {/*TODO- If in check, show here. "Will is in check!" something red*/}

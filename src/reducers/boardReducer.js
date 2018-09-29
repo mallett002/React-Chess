@@ -1,4 +1,4 @@
-import { PIECE_MOVED, PIECE_SELECTED, DESELECT } from '../actions/actions';
+import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE } from '../actions/actions';
 
 let initialState = {
   layout: [
@@ -18,7 +18,8 @@ let initialState = {
     {name:"queen", team:"player1", id:59},{name:"king", team:"player1", id:60}, {name:"bishop", team:"player1", id:61}, 
     {name:"knight", team:"player1", id:62}, {name:"rook", team:"player1", id:63}
   ],
-  selected: null // or something like: {piece: {name:"bishop", team:"player", id:58}, place: 55}
+  selected: null, // or something like: {piece: {name:"bishop", team:"player1", id:58}, index: 55}
+  validMoves: [],
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -31,8 +32,13 @@ const boardReducer = (state = initialState, action) => {
         case DESELECT:
             return {
                 ...state,
-                // set selected back to null
-                selected: null
+                selected: null,
+                validMoves: []
+            }
+        case SHOW_MOVE:
+            return {
+                ...state,
+                validMoves: state.validMoves.concat(action.payload)
             }
         case PIECE_MOVED:
             return {
@@ -41,7 +47,8 @@ const boardReducer = (state = initialState, action) => {
                 ...state.layout[action.payload.to] = state.selected.piece,
                 // set index of "from" to be an "empty" one
                 ...state.layout[action.payload.from] = {name:"empty"},
-                selected: null
+                selected: null,
+                validMoves: []
             }
         default:
             return state

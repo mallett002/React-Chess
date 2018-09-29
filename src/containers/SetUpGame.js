@@ -59,7 +59,6 @@ class SetUpGame extends Component {
         // Dispatch an action with the info
         // addUserInfo(player1, player2)
         this.props.addUserInfo(this.state.player1, this.state.player2);
-        console.log("action dispatched");
     }
 
     render() {
