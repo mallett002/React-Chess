@@ -83,6 +83,7 @@ export const rookMoves = (selectedPiece, board) => {
     let pieceBelow;
     let pieceRight;
     let pieceLeft;
+
     // if there are any pieces above
     if (piecesAbove.length >= 1) {
         pieceAbove = Math.max(...piecesAbove); // first piece you run into
@@ -123,13 +124,14 @@ export const rookMoves = (selectedPiece, board) => {
     // if there are any pieces to the left
     if (piecesToLeft.length > 0) {
         pieceLeft = Math.max(...piecesToLeft);
-    
+        // if on same team
         if (board[pieceLeft].team === selectedPiece.piece.team) {
             validLeft = validLeft.filter(i => i > pieceLeft);
-        } else {
+        } else { // otherwise it's an enemy
             validLeft = validLeft.filter(i => i >= pieceLeft);
         }
     }
+
     // Combine all valid arrays to make validIndices
     validIndices = validUp.concat(validDown).concat(validRight).concat(validLeft);
     // Then remove the index of the selected piece
