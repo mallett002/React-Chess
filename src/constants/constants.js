@@ -1,4 +1,5 @@
 import { rookMoves } from './rookRoute';
+import { bishopRoute } from './bishopRoute';
 
 export const isLight = (n) => {
     if (n <= 7 ||
@@ -61,7 +62,11 @@ export const makeCoords = index => {
 // board is state.board.layout
 // selectedPiece: state.board.selected
 export const getValidMoves = (selectedPiece, board) => {
+
+    const piece = selectedPiece.piece.name; 
+
     // Call corresponding function based on type of piece
-    if (selectedPiece.piece.name === "rook") return rookMoves(selectedPiece, board);
+    if (piece === "rook") return rookMoves(selectedPiece, board);
+    else if (piece === "bishop") return bishopRoute(selectedPiece, board);
     else return [];
 };
