@@ -1,3 +1,5 @@
+import { rookMoves } from './rookRoute';
+
 export const isLight = (n) => {
     if (n <= 7 ||
         n > 15 && n < 24 ||
@@ -55,67 +57,11 @@ export const makeCoords = index => {
     return coords;
 };
 
-// board.layout is the board
-// fromContent is index of selected piece
-// to is index of destination
-const rookMoves = (selectedPiece, board) => {
-    let indices = [];
-    // Look at each place on the board to see if the rook can get there
-    board.forEach((box, i) => {
-        let fromCoords = makeCoords(selectedPiece.index); // x, y of selectedPiece
-        let toCoords = makeCoords(i); // x, y of current index
-        if (fromCoords[0] === toCoords[0]) indices.push(i);
-        else if (fromCoords[1] === toCoords[1] && !indices.includes(i)) indices.push(i);
-    });
-    return indices;
-}
-
-// isValid returns array of indices that the piece can move to
+// getValidMoves returns array of indices that the piece can move to
 // board is state.board.layout
 // selectedPiece: state.board.selected
 export const getValidMoves = (selectedPiece, board) => {
     // Call corresponding function based on type of piece
     if (selectedPiece.piece.name === "rook") return rookMoves(selectedPiece, board);
+    else return [];
 };
-
-
-
-
-// Moving up and down (same x)
-/*if (fromCoords[0] === toCoords[0]) {
-    // if a piece in the way of destination: false
-    board.layout.forEach((item, i) => {
-        // get same x from the board
-        if (makeCoords(i)[0] === fromCoords[0]) {
-            // Moving up on the board
-            if (makeCoords(i)[1] >= toCoords[1]) {
-                // if that index has a piece in it, return false
-                if (board.layout[i].name !== "empty") return false
-                else return true;
-                // Moving down on the board
-            } else if (makeCoords(i)[1] <= toCoords[1]) {
-                // if that index has a piece in it, return false
-                if (board.layout[i].name !== "empty") return false
-                else return true;
-            }
-        }
-    });
-    // Moving side to side (same y)
-} else if (fromCoords[1] === toCoords[1]) {
-    // if a piece in the way of destination: false
-    board.layout.forEach((item, i) => {
-        // filter out same y from the board
-        if (makeCoords(i)[1] === fromCoords[1]) {
-            // moving left to right: x will increase
-            if (makeCoords(i)[0] > fromCoords[0] && makeCoords(i)[0] < toCoords[i]) {
-                if (board.layout[i].name !== "empty") return false;
-                else return true;
-            }
-            // moving right to left
-            if (makeCoords(i)[0] < fromCoords[0] && makeCoords(i)[0] > toCoords[i]) {
-                if (board.layout[i].name !== "empty") return false;
-                else return true;
-            }
-        }
-    });
-}*/

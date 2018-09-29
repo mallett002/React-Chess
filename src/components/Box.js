@@ -63,10 +63,13 @@ class Box extends Component {
 
   render() {
 
-    const { piece, index, player1, player2 } = this.props;
+    const { piece, index, player1, player2, board } = this.props;
 
     return (
-      <div className="box" id={index}
+      <div 
+        className={['box', 
+          board.validMoves.includes(index) && 'valid-move', 
+          board.selected !== null && board.selected.index === index && 'selected-piece'].join(' ')} 
         onClick={this.handleClick}
         style={isLight(index)
           ? { background: '#eaeaea' }

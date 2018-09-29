@@ -16,13 +16,13 @@ class Board extends Component {
 
     componentDidUpdate() {
         const { board, showMove } = this.props;
-
         // If there is a selected piece
         if (board.selected !== null) {
             // get the indices of the valid moves
             let validIndices = getValidMoves(board.selected, board.layout);
-            // Update the state.validMoves with the indices. Only do it once, if it's empty
-            if (board.validMoves.length === 0) {
+            // Update the state.validMoves with the indices. 
+            // Only do it if it's empty, and there are valid moves to make
+            if (board.validMoves.length === 0 && validIndices.length !== 0) {
                 showMove(validIndices);
             }
         }
@@ -36,7 +36,6 @@ class Board extends Component {
 
     render() {
         const { board, player1, player2 } = this.props;
-        console.log("state.validMoves:", board.validMoves);
         return (
             <div id='board'>{
                 board.layout.map((p, i) => {
