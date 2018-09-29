@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const rookMoves = (selectedPiece, board) => {
+export const bishopRoute = (selectedPiece, board) => {
     // validIndices will be combined validIndices in all directions, and returned at end
     let validIndices = [];
     // pieceIndices are the indices with pieces in them, that are in the path of the rook
@@ -71,7 +71,7 @@ export const rookMoves = (selectedPiece, board) => {
             if (fromCoords[0] > makeCoords(i)[0] && pieceIndices.includes(i)) {
                 piecesToLeft.push(i);
             } // Get the indices looking left
-            if (fromCoords[0] > makeCoords(i)[0]) {
+            if (fromCoords[0] > makeCoords(1)[0]) {
                 validLeft.push(i);
             }
         }
@@ -110,7 +110,6 @@ export const rookMoves = (selectedPiece, board) => {
     // if there are any pieces to the right
     if (piecesToRight.length > 0) {
         pieceRight = Math.min(...piecesToRight); // first one we run into is the smallest
-
         // if same team, move right until index just before that one (get i < pieceRight)
         if (board[pieceRight].team === selectedPiece.piece.team) {
             validRight = validRight.filter(i => i < pieceRight);
@@ -123,13 +122,13 @@ export const rookMoves = (selectedPiece, board) => {
     // if there are any pieces to the left
     if (piecesToLeft.length > 0) {
         pieceLeft = Math.max(...piecesToLeft);
-    
         if (board[pieceLeft].team === selectedPiece.piece.team) {
             validLeft = validLeft.filter(i => i > pieceLeft);
         } else {
             validLeft = validLeft.filter(i => i >= pieceLeft);
         }
     }
+    
     // Combine all valid arrays to make validIndices
     validIndices = validUp.concat(validDown).concat(validRight).concat(validLeft);
     // Then remove the index of the selected piece
