@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const rookMoves = (selectedPiece, board) => {
+export const rookRoutes = (selectedPiece, board) => {
     // validIndices will be combined validIndices in all directions, and returned at end
     let validIndices = [];
     // pieceIndices are the indices with pieces in them, that are in the path of the rook
