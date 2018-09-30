@@ -12,10 +12,6 @@ export const knightRoutes = (selectedPiece, board) => {
         let toCoords = makeCoords(i);
 
         // The general routes
-        console.log("index:", i);
-        console.log("x distance:", Math.abs(fromCoords[0] - toCoords[0]));
-        console.log("y distance:", Math.abs(fromCoords[1] - toCoords[1]));
-
         // 2 y's away and 1 x away Or 1 y away and 2 x's away
         if (Math.abs(fromCoords[1] - toCoords[1]) === 2 &&
             Math.abs(fromCoords[0] - toCoords[0]) === 1 ||
