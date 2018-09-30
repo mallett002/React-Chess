@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const knightRoutes = (selectedPiece, board) => {
+export const kingRoutes = (selectedPiece, board) => {
     let validIndices = [];
     let pieceIndices = [];
     board.forEach((box, i) => {
@@ -12,11 +12,16 @@ export const knightRoutes = (selectedPiece, board) => {
         let toCoords = makeCoords(i);
 
         // The general routes
-        // 2 y's away and 1 x away Or 1 y away and 2 x's away
-        if (Math.abs(fromCoords[1] - toCoords[1]) === 2 &&
-            Math.abs(fromCoords[0] - toCoords[0]) === 1 ||
-            Math.abs(fromCoords[0] - toCoords[0]) === 2 &&
-            Math.abs(fromCoords[1] - toCoords[1]) === 1) {
+        // TODO- Can't move to an index that a piece can kill on next move
+        //      TODO- Create state.inCheckIndices
+
+        // if same x "same column"
+        if (fromCoords[0] === toCoords[0] && Math.abs(fromCoords[1] - toCoords[1]) === 1 ||
+            // if same row
+            fromCoords[1] === toCoords[1] && Math.abs(fromCoords[0] - toCoords[0]) === 1 ||
+            // diagonals one away
+            Math.abs(fromCoords[1] - toCoords[1]) === 1 && Math.abs(fromCoords[0] - toCoords[0]) === 1
+        ) {
             // if is empty place or an enemy piece put it in validIndics
             if (board[i].name !== "empty") {
                 if (board[i].team !== selectedPiece.piece.team) {

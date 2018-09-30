@@ -2,6 +2,7 @@ import { rookRoutes } from './rookRoute';
 import { bishopRoutes } from './bishopRoute';
 import { queenRoutes } from './queenRoute';
 import { knightRoutes } from './knightRoute';
+import { kingRoutes } from './kingRoute';
 
 export const isLight = (n) => {
     if (n <= 7 ||
@@ -72,5 +73,6 @@ export const getValidMoves = (selectedPiece, board) => {
     else if (piece === "bishop") return bishopRoutes(selectedPiece, board);
     else if (piece === "queen") return queenRoutes(selectedPiece, board);
     else if (piece === "knight") return knightRoutes(selectedPiece, board);
+    else if (piece === "king") return kingRoutes(selectedPiece, board);
     else return [];
 };
