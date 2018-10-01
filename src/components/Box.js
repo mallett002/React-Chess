@@ -57,7 +57,6 @@ class Box extends Component {
         handleMove(board.selected.index, index);
 
         // Update the state with the dangerIndices for this piece at the new location
-
         let dangerIndices = getValidMoves({
           piece: {
             id: selected.piece.id,
@@ -67,8 +66,6 @@ class Box extends Component {
           index: index
         }, board.layout);
 
-        console.log("dangerIndices:", dangerIndices);
-        
         if (team === "player1") addPlayerOneDanger(dangerIndices);
         else addPlayerTwoDanger(dangerIndices);
       }
@@ -81,7 +78,19 @@ class Box extends Component {
         handleMove(board.selected.index, index);
 
         // Get the dangerIndices for this piece
-        // TODO- Update the state with the dangerIndices for this piece at the new location
+        // Update the state with the dangerIndices for this piece at the new location
+        // Update the state with the dangerIndices for this piece at the new location
+        let dangerIndices = getValidMoves({
+          piece: {
+            id: selected.piece.id,
+            name: selected.piece.name,
+            team: selected.piece.team
+          },
+          index: index
+        }, board.layout);
+
+        if (team === "player1") addPlayerOneDanger(dangerIndices);
+        else addPlayerTwoDanger(dangerIndices);
 
       }
 
