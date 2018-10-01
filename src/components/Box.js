@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
-import { isLight } from '../constants/constants';
-import { selectPiece, deselect, addToFallen } from '../actions/actions';
+import { isLight, getValidMoves } from '../constants/constants';
+import { selectPiece, deselect, addToFallen, addPlayerOneDanger, addPlayerTwoDanger } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -25,7 +25,9 @@ class Box extends Component {
     // piece is the data in that index
     // coords is an array of the x, y coords of the board
     // board is the Redux store for the board
-    const { piece, coords, index, board, selectPiece, deselect, handleMove, addToFallen } = this.props;
+    const { piece, coords, index,
+      board, selectPiece, deselect, handleMove, addToFallen,
+      addPlayerOneDanger, addPlayerTwoDanger } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -48,14 +50,39 @@ class Box extends Component {
     if (board.selected !== null && index !== board.selected.index) {
       // If new index has a piece, and it's on the other team, add that to the fallen list
       if (piece.name !== "empty" && piece.team !== board.selected.piece.team) {
+        let team = board.selected.piece.team;
+        let selected = board.selected;
         addToFallen(piece);
-        // insert "selected" into "index"
+        // insert "selected" into "index": handleMove(from, to)
         handleMove(board.selected.index, index);
+
+        // Update the state with the dangerIndices for this piece at the new location
+
+        let dangerIndices = getValidMoves({
+          piece: {
+            id: selected.piece.id,
+            name: selected.piece.name,
+            team: selected.piece.team
+          },
+          index: index
+        }, board.layout);
+
+        console.log("dangerIndices:", dangerIndices);
+        
+        if (team === "player1") addPlayerOneDanger(dangerIndices);
+        else addPlayerTwoDanger(dangerIndices);
       }
 
       // if new index doesn't have a piece, just send it to that empty spot
       if (piece.name === "empty") {
+        let team = board.selected.piece.team;
+        let selected = board.selected;
+
         handleMove(board.selected.index, index);
+
+        // Get the dangerIndices for this piece
+        // TODO- Update the state with the dangerIndices for this piece at the new location
+
       }
 
     }
@@ -66,10 +93,10 @@ class Box extends Component {
     const { piece, index, player1, player2, board } = this.props;
 
     return (
-      <div 
-        className={['box', 
-          board.validMoves.includes(index) && 'valid-move', 
-          board.selected !== null && board.selected.index === index && 'selected-piece'].join(' ')} 
+      <div
+        className={['box',
+          board.validMoves.includes(index) && 'valid-move',
+          board.selected !== null && board.selected.index === index && 'selected-piece'].join(' ')}
         onClick={this.handleClick}
         style={isLight(index)
           ? { background: '#eaeaea' }
@@ -97,4 +124,6 @@ Box.propTypes = {
   index: PropTypes.number.isRequired
 };
 
-export default connect(null, { selectPiece, deselect, addToFallen })(Box);
+export default connect(null, {
+  selectPiece, deselect, addToFallen, addPlayerOneDanger, addPlayerTwoDanger
+})(Box);

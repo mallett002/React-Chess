@@ -13,7 +13,8 @@ export const kingRoutes = (selectedPiece, board) => {
 
         // The general routes
         // TODO- Can't move to an index that a piece can kill on next move
-        //      TODO- Create state.inCheckIndices
+        //      TODO- Create state.dangerIndices
+        // TODO- Be able to castle
 
         // if same x "same column"
         if (fromCoords[0] === toCoords[0] && Math.abs(fromCoords[1] - toCoords[1]) === 1 ||

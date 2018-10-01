@@ -1,4 +1,4 @@
-import { PIECE_TAKEN, PLAYERS_ADDED } from '../actions/actions';
+import { PIECE_TAKEN, PLAYERS_ADDED, PLAYER_ONE_DANGER } from '../actions/actions';
 
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
 // Want to know if a king is in check
@@ -9,6 +9,7 @@ const initialState = {
     color: '',
     userName: '',
     piecesOut: [],
+    dangerIndices: [40, 41, 42, 43, 44, 45, 46, 47],
     inCheck: false,
     isTurn: false
 };
@@ -26,6 +27,11 @@ const playerOneReducer = (state = initialState, action) => {
                 ...state,
                 // make sure piece belongs to this team before adding to piecesOut
                 piecesOut: [...state.piecesOut, action.payload.team === state.team && action.payload]
+            }
+        case PLAYER_ONE_DANGER:
+            return {
+                ...state,
+                dangerIndices: [...state.dangerIndices, ...action.payload]
             }
         case "PUT_IN_CHECK":
             return {

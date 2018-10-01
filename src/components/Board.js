@@ -36,6 +36,7 @@ class Board extends Component {
 
     render() {
         const { board, player1, player2 } = this.props;
+        
         return (
             <div id='board'>{
                 board.layout.map((p, i) => {

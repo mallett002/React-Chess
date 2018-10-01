@@ -4,6 +4,8 @@ export const DESELECT = 'DESELECT';
 export const PIECE_TAKEN = 'PIECE_TAKEN';
 export const PLAYERS_ADDED = 'PLAYERS_ADDED';
 export const SHOW_MOVE = 'SHOW_MOVE';
+export const PLAYER_ONE_DANGER = 'PLAYER_ONE_DANGER';
+export const PLAYER_TWO_DANGER = 'PLAYER_TWO_DANGER';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -38,4 +40,16 @@ export const addUserInfo = (player1, player2) => ({
 export const showMove = validIndices => ({
     type: SHOW_MOVE,
     payload: validIndices
+});
+
+// add dangerIndices for player 1
+export const addPlayerOneDanger = (array) => ({
+    type: PLAYER_ONE_DANGER,
+    payload: array
+});
+
+// add dangerIndices for player 2
+export const addPlayerTwoDanger = (array) => ({
+    type: PLAYER_TWO_DANGER,
+    payload: array
 });
