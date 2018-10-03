@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const rookRoutes = (selectedPiece, board) => {
+export const rookRoutes = (selectedPiece, board, stateSelected) => {
     // validIndices will be combined validIndices in all directions, and returned at end
     let validIndices = [];
     // pieceIndices are the indices with pieces in them, that are in the path of the rook
@@ -88,10 +88,13 @@ export const rookRoutes = (selectedPiece, board) => {
     if (piecesAbove.length >= 1) {
         pieceAbove = Math.max(...piecesAbove); // first piece you run into
         // if same team, move up until before it (get all i's > pieceAbove)
-        if (board[pieceAbove].team === selectedPiece.piece.team) {
+        if (board[pieceAbove].team === selectedPiece.piece.team && stateSelected !== null) {
             validUp = validUp.filter(i => i > pieceAbove);
-        } else {
+        } else if (board[pieceAbove].team !== selectedPiece.piece.team && stateSelected !== null) {
             // if it's an enemy, move up until that piece (keep all indices greater than or = to it)
+            validUp = validUp.filter(i => i >= pieceAbove);
+        // if just getting the dangerIndices
+        } else if (stateSelected === null) {
             validUp = validUp.filter(i => i >= pieceAbove);
         }
     }
@@ -100,10 +103,12 @@ export const rookRoutes = (selectedPiece, board) => {
     if (piecesBelow.length > 0) {
         pieceBelow = Math.min(...piecesBelow);
         // if same team, able to move down until before it (get all i's < pieceBelow)
-        if (board[pieceBelow].team === selectedPiece.piece.team) {
+        if (board[pieceBelow].team === selectedPiece.piece.team && stateSelected !== null) {
             validDown = validDown.filter(i => i < pieceBelow);
-        } else {
+        } else if (board[pieceBelow].team !== selectedPiece.piece.team && stateSelected !== null) {
             // otherwise it's an enemy. Keep all i's <= pieceBelow
+            validDown = validDown.filter(i => i <= pieceBelow);
+        } else if (stateSelected === null) {
             validDown = validDown.filter(i => i <= pieceBelow);
         }
     }
@@ -111,12 +116,13 @@ export const rookRoutes = (selectedPiece, board) => {
     // if there are any pieces to the right
     if (piecesToRight.length > 0) {
         pieceRight = Math.min(...piecesToRight); // first one we run into is the smallest
-
         // if same team, move right until index just before that one (get i < pieceRight)
-        if (board[pieceRight].team === selectedPiece.piece.team) {
+        if (board[pieceRight].team === selectedPiece.piece.team && stateSelected !== null) {
             validRight = validRight.filter(i => i < pieceRight);
-        } else {
+        } else if (board[pieceRight].team !== selectedPiece.piece.team && stateSelected !== null) {
             // enemy: get all i's <= pieceRight
+            validRight = validRight.filter(i => i <= pieceRight);
+        } else if (stateSelected === null) {
             validRight = validRight.filter(i => i <= pieceRight);
         }
     }
@@ -125,9 +131,11 @@ export const rookRoutes = (selectedPiece, board) => {
     if (piecesToLeft.length > 0) {
         pieceLeft = Math.max(...piecesToLeft);
         // if on same team
-        if (board[pieceLeft].team === selectedPiece.piece.team) {
+        if (board[pieceLeft].team === selectedPiece.piece.team && stateSelected !== null)  {
             validLeft = validLeft.filter(i => i > pieceLeft);
-        } else { // otherwise it's an enemy
+        } else if (board[pieceLeft].team !== selectedPiece.piece.team && stateSelected !== null) { 
+            validLeft = validLeft.filter(i => i >= pieceLeft);
+        } else if (stateSelected === null) {
             validLeft = validLeft.filter(i => i >= pieceLeft);
         }
     }

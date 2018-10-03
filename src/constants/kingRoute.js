@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const kingRoutes = (selectedPiece, board) => {
+export const kingRoutes = (selectedPiece, board, stateSelected) => {
     let validIndices = [];
     let pieceIndices = [];
     board.forEach((box, i) => {
@@ -24,11 +24,13 @@ export const kingRoutes = (selectedPiece, board) => {
             Math.abs(fromCoords[1] - toCoords[1]) === 1 && Math.abs(fromCoords[0] - toCoords[0]) === 1
         ) {
             // if is empty place or an enemy piece put it in validIndics
-            if (board[i].name !== "empty") {
+            if (board[i].name !== "empty" && stateSelected !== null) {
                 if (board[i].team !== selectedPiece.piece.team) {
                     validIndices.push(i);
                 }
-            } else if (board[i].name === "empty") {
+            } else if (board[i].name === "empty" && stateSelected !== null) {
+                validIndices.push(i);
+            } else if (stateSelected === null) {
                 validIndices.push(i);
             }
         }

@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const bishopRoutes = (selectedPiece, board) => {
+export const bishopRoutes = (selectedPiece, board, stateSelected) => {
     // validIndices will be combined validIndices in all directions, and returned at end
     let validIndices = [];
     // pieceIndices are the indices with pieces in them, that are in the path of the rook
@@ -101,11 +101,11 @@ export const bishopRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceUpLeft = Math.max(...piecesUpLeft);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceUpLeft].team) {
+        if (selectedPiece.piece.team === board[pieceUpLeft].team && stateSelected !== null) {
             // change validUpLeft to be all i's greater than pieceUpLeft
             validUpLeft = validUpLeft.filter(i => i > pieceUpLeft);
         } else {
-            // Otherwise it's an enemy piece
+            // Otherwise it's an enemy piece or getting dangerIndices
             validUpLeft = validUpLeft.filter(i => i >= pieceUpLeft);
         }
     }
@@ -115,11 +115,11 @@ export const bishopRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceUpRight = Math.max(...piecesUpRight);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceUpRight].team) {
+        if (selectedPiece.piece.team === board[pieceUpRight].team && stateSelected !== null) {
             // change validUpRight to be all i's greater than pieceUpRight
             validUpRight = validUpRight.filter(i => i > pieceUpRight);
         } else {
-            // Otherwise it's an enemy piece, so include it in the valid move
+            // Otherwise it's an enemy piece, or getting dangerIndices so include it in the valid move
             validUpRight = validUpRight.filter(i => i >= pieceUpRight);
         }
     }
@@ -129,10 +129,10 @@ export const bishopRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceDownLeft = Math.min(...piecesDownLeft);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceDownLeft].team) {
+        if (selectedPiece.piece.team === board[pieceDownLeft].team && stateSelected !== null) {
             validDownLeft = validDownLeft.filter(i => i < pieceDownLeft);
         } else {
-            // Otherwise it's an enemy piece, so include it in the valid move
+            // Otherwise it's an enemy piece, or getting dangerIndices
             validDownLeft = validDownLeft.filter(i => i <= pieceDownLeft);
         }
     }
@@ -142,11 +142,11 @@ export const bishopRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceDownRight = Math.min(...piecesDownRight);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceDownRight].team) {
+        if (selectedPiece.piece.team === board[pieceDownRight].team && stateSelected !== null) {
             // change validDownRight to be all i's less than pieceDownLeft
             validDownRight = validDownRight.filter(i => i < pieceDownRight);
         } else {
-            // Otherwise it's an enemy piece, so include it in the valid move
+            // Otherwise it's an enemy piece, or getting dangerIndices
             validDownRight = validDownRight.filter(i => i <= pieceDownRight);
         }
     }

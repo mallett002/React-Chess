@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
 import { isLight, getValidMoves } from '../constants/constants';
-import { selectPiece, deselect, addToFallen, addPlayerOneDanger, addPlayerTwoDanger } from '../actions/actions';
+import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -27,7 +27,7 @@ class Box extends Component {
     // board is the Redux store for the board
     const { piece, coords, index,
       board, selectPiece, deselect, handleMove, addToFallen,
-      addPlayerOneDanger, addPlayerTwoDanger } = this.props;
+      updatePlayerOneDanger, updatePlayerTwoDanger, updateSelected } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -38,6 +38,9 @@ class Box extends Component {
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
       selectPiece(piece, index);
+
+      // and call parent updateSelected(piece) to pass it to the board's state
+      updateSelected(piece);
     }
 
     // If selected box is clicked again, deselect it
@@ -55,19 +58,6 @@ class Box extends Component {
         addToFallen(piece);
         // insert "selected" into "index": handleMove(from, to)
         handleMove(board.selected.index, index);
-
-        // Update the state with the dangerIndices for this piece at the new location
-        let dangerIndices = getValidMoves({
-          piece: {
-            id: selected.piece.id,
-            name: selected.piece.name,
-            team: selected.piece.team
-          },
-          index: index
-        }, board.layout);
-
-        if (team === "player1") addPlayerOneDanger(dangerIndices);
-        else addPlayerTwoDanger(dangerIndices);
       }
 
       // if new index doesn't have a piece, just send it to that empty spot
@@ -75,25 +65,9 @@ class Box extends Component {
         let team = board.selected.piece.team;
         let selected = board.selected;
 
+        // move the piece
         handleMove(board.selected.index, index);
-
-        // Get the dangerIndices for this piece
-        // Update the state with the dangerIndices for this piece at the new location
-        // Update the state with the dangerIndices for this piece at the new location
-        let dangerIndices = getValidMoves({
-          piece: {
-            id: selected.piece.id,
-            name: selected.piece.name,
-            team: selected.piece.team
-          },
-          index: index
-        }, board.layout);
-
-        if (team === "player1") addPlayerOneDanger(dangerIndices);
-        else addPlayerTwoDanger(dangerIndices);
-
       }
-
     }
   };
 
@@ -134,5 +108,5 @@ Box.propTypes = {
 };
 
 export default connect(null, {
-  selectPiece, deselect, addToFallen, addPlayerOneDanger, addPlayerTwoDanger
+  selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger,
 })(Box);
