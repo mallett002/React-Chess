@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const knightRoutes = (selectedPiece, board) => {
+export const knightRoutes = (selectedPiece, board, stateSelected) => {
     let validIndices = [];
     let pieceIndices = [];
     board.forEach((box, i) => {
@@ -23,6 +23,10 @@ export const knightRoutes = (selectedPiece, board) => {
                     validIndices.push(i);
                 }
             } else if (board[i].name === "empty") {
+                validIndices.push(i);
+                
+            // or if getting just the dangerIndices when no piece is selected:
+            } else if (stateSelected === null) {
                 validIndices.push(i);
             }
         }

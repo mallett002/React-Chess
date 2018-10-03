@@ -2,7 +2,7 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const queenRoutes = (selectedPiece, board) => {
+export const queenRoutes = (selectedPiece, board, stateSelected) => {
     // validIndices will be combined validIndices in all directions, and returned at end
     let validIndices = [];
     // pieceIndices are the indices with pieces in them, that are in the path
@@ -162,7 +162,7 @@ export const queenRoutes = (selectedPiece, board) => {
     if (piecesAbove.length >= 1) {
         pieceAbove = Math.max(...piecesAbove); // first piece you run into
         // if same team, move up until before it (get all i's > pieceAbove)
-        if (board[pieceAbove].team === selectedPiece.piece.team) {
+        if (board[pieceAbove].team === selectedPiece.piece.team && stateSelected !== null) {
             validUp = validUp.filter(i => i > pieceAbove);
         } else {
             // if it's an enemy, move up until that piece (keep all indices greater than or = to it)
@@ -174,7 +174,7 @@ export const queenRoutes = (selectedPiece, board) => {
     if (piecesBelow.length > 0) {
         pieceBelow = Math.min(...piecesBelow);
         // if same team, able to move down until before it (get all i's < pieceBelow)
-        if (board[pieceBelow].team === selectedPiece.piece.team) {
+        if (board[pieceBelow].team === selectedPiece.piece.team && stateSelected !== null) {
             validDown = validDown.filter(i => i < pieceBelow);
         } else {
             // otherwise it's an enemy. Keep all i's <= pieceBelow
@@ -187,7 +187,7 @@ export const queenRoutes = (selectedPiece, board) => {
         pieceRight = Math.min(...piecesToRight); // first one we run into is the smallest
 
         // if same team, move right until index just before that one (get i < pieceRight)
-        if (board[pieceRight].team === selectedPiece.piece.team) {
+        if (board[pieceRight].team === selectedPiece.piece.team && stateSelected !== null) {
             validRight = validRight.filter(i => i < pieceRight);
         } else {
             // enemy: get all i's <= pieceRight
@@ -199,7 +199,7 @@ export const queenRoutes = (selectedPiece, board) => {
     if (piecesToLeft.length > 0) {
         pieceLeft = Math.max(...piecesToLeft);
         // if on same team
-        if (board[pieceLeft].team === selectedPiece.piece.team) {
+        if (board[pieceLeft].team === selectedPiece.piece.team && stateSelected !== null) {
             validLeft = validLeft.filter(i => i > pieceLeft);
         } else { // otherwise it's an enemy
             validLeft = validLeft.filter(i => i >= pieceLeft);
@@ -211,7 +211,7 @@ export const queenRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceUpLeft = Math.max(...piecesUpLeft);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceUpLeft].team) {
+        if (selectedPiece.piece.team === board[pieceUpLeft].team && stateSelected !== null) {
             // change validUpLeft to be all i's greater than pieceUpLeft
             validUpLeft = validUpLeft.filter(i => i > pieceUpLeft);
         } else {
@@ -225,7 +225,7 @@ export const queenRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceUpRight = Math.max(...piecesUpRight);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceUpRight].team) {
+        if (selectedPiece.piece.team === board[pieceUpRight].team && stateSelected !== null) {
             // change validUpRight to be all i's greater than pieceUpRight
             validUpRight = validUpRight.filter(i => i > pieceUpRight);
         } else {
@@ -239,7 +239,7 @@ export const queenRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceDownLeft = Math.min(...piecesDownLeft);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceDownLeft].team) {
+        if (selectedPiece.piece.team === board[pieceDownLeft].team && stateSelected !== null) {
             validDownLeft = validDownLeft.filter(i => i < pieceDownLeft);
         } else {
             // Otherwise it's an enemy piece, so include it in the valid move
@@ -252,7 +252,7 @@ export const queenRoutes = (selectedPiece, board) => {
         // Get the first one you would run into from the selected piece
         pieceDownRight = Math.min(...piecesDownRight);
         // if it's on same team as selected piece
-        if (selectedPiece.piece.team === board[pieceDownRight].team) {
+        if (selectedPiece.piece.team === board[pieceDownRight].team && stateSelected !== null) {
             // change validDownRight to be all i's less than pieceDownLeft
             validDownRight = validDownRight.filter(i => i < pieceDownRight);
         } else {

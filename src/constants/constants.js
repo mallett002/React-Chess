@@ -64,15 +64,25 @@ export const makeCoords = index => {
 // getValidMoves returns array of indices that the piece can move to
 // board is state.board.layout
 // selectedPiece: state.board.selected
-export const getValidMoves = (selectedPiece, board) => {
+export const getValidMoves = (selectedPiece, board, stateSelected) => {
 
     const piece = selectedPiece.piece.name; 
 
     // Call corresponding function based on type of piece
-    if (piece === "rook") return rookRoutes(selectedPiece, board);
-    else if (piece === "bishop") return bishopRoutes(selectedPiece, board);
-    else if (piece === "queen") return queenRoutes(selectedPiece, board);
-    else if (piece === "knight") return knightRoutes(selectedPiece, board);
-    else if (piece === "king") return kingRoutes(selectedPiece, board);
-    else return [];
+    if (piece === "rook") return rookRoutes(selectedPiece, board, stateSelected);
+    else if (piece === "bishop") return bishopRoutes(selectedPiece, board, stateSelected);
+    else if (piece === "queen") return queenRoutes(selectedPiece, board, stateSelected);
+    else if (piece === "knight") return knightRoutes(selectedPiece, board, stateSelected);
+    else if (piece === "king") return kingRoutes(selectedPiece, board, stateSelected);
+    else if (piece === "pawn") return [];
+};
+
+export const onlyOneOfEach = array => {
+    let oneOfEach = [];
+    for (let item of array) {
+        if (!oneOfEach.includes(item)) {
+            oneOfEach.push(item);
+        }
+    }
+    return oneOfEach;
 };

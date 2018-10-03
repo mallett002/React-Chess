@@ -4,11 +4,13 @@ export const DESELECT = 'DESELECT';
 export const PIECE_TAKEN = 'PIECE_TAKEN';
 export const PLAYERS_ADDED = 'PLAYERS_ADDED';
 export const SHOW_MOVE = 'SHOW_MOVE';
+export const UPDATE_PLAYER_ONE_DANGER = 'UPDATE_PLAYER_ONE_DANGER';
+export const UPDATE_PLAYER_TWO_DANGER = 'UPDATE_PLAYER_TWO_DANGER';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
     type: PIECE_SELECTED,
-    payload: {piece: piece, index: place}
+    payload: { piece: piece, index: place }
 });
 
 // Deselect a selected piece
@@ -39,3 +41,16 @@ export const showMove = validIndices => ({
     type: SHOW_MOVE,
     payload: validIndices
 });
+
+// add dangerIndices for player 1
+export const updatePlayerOneDanger = dangerIndices => ({
+    type: UPDATE_PLAYER_ONE_DANGER,
+    payload: dangerIndices
+});
+
+// add dangerIndices for player 2
+export const updatePlayerTwoDanger = dangerIndices => ({
+    type: UPDATE_PLAYER_TWO_DANGER,
+    payload: dangerIndices
+});
+
