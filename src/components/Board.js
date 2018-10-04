@@ -3,7 +3,16 @@ import PropTypes from 'prop-types';
 import Box from './Box';
 import King from './King';
 import { connect } from 'react-redux';
-import { moveTo, showMove, updatePlayerOneDanger, updatePlayerTwoDanger } from '../actions/actions';
+import {
+    moveTo,
+    showMove,
+    updatePlayerOneDanger,
+    updatePlayerTwoDanger,
+    playerOneInCheck,
+    playerTwoInCheck, 
+    removeOneFromCheck,
+    removeTwoFromCheck
+} from '../actions/actions';
 import { isLight, makeCoords, getValidMoves, onlyOneOfEach } from '../constants/constants';
 
 // Board will have width and height of 8 X 8
@@ -11,29 +20,17 @@ import { isLight, makeCoords, getValidMoves, onlyOneOfEach } from '../constants/
 class Board extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            // last selected piece will be saved here
-            lastSelected: { piece: {} }
-        };
-
         this.handleMove = this.handleMove.bind(this);
-        this.updateSelected = this.updateSelected.bind(this);
     }
 
-    updateSelected(selected) {
-        this.setState({
-            lastSelected: selected
-        });
-    }
 
     componentDidUpdate() {
         const { board, player1, player2, showMove } = this.props;
+        console.log("p1inCheck:", player1.inCheck);
+        console.log("p2inCheck:", player2.inCheck);
+        let items = board.layout;
         let playerOneDanger = player1.dangerIndices;
         let playerTwoDanger = player2.dangerIndices;
-
-        console.log("state.p1.danger:", playerOneDanger);
-        console.log("state.p2.danger:", playerTwoDanger);
 
         // If there is a selected piece
         if (board.selected !== null) {
@@ -51,8 +48,11 @@ class Board extends Component {
 
     // Dispatches an action to move the piece
     handleMove(from, to) {
-        const { board, player1, player2, moveTo, updatePlayerOneDanger, updatePlayerTwoDanger } = this.props;
-        const { lastSelected } = this.state;
+        const {
+            board, player1, player2, moveTo, 
+            updatePlayerOneDanger, updatePlayerTwoDanger, playerOneInCheck, playerTwoInCheck, 
+            removeOneFromCheck, removeTwoFromCheck 
+        } = this.props;
 
         // move the piece 
         moveTo(from, to);
@@ -81,11 +81,38 @@ class Board extends Component {
         // Then update the Redux store with the danger indices for both teams.
         updatePlayerOneDanger(playerOneDanger);
         updatePlayerTwoDanger(playerTwoDanger);
+
+        // Check if a king is in check
+        board.layout.forEach((box, i) => {
+            // get the indices of the kings
+            if (board.layout[i].name === "king") {
+                // Check player1
+                if (board.layout[i].team === "player1") {
+                    // check if the index is in the other team's dangerIndices & not currently in check
+                    if (playerTwoDanger.includes(i) && !player1.inCheck) {
+                        playerOneInCheck();
+                    // take it out of check if not in danger anymore
+                    } else if (!playerTwoDanger.includes(i) && player1.inCheck) {
+                        removeOneFromCheck();
+                    }
+                }
+                // Check player2
+                else {
+                    // check if the index is in the other team's dangerIndices
+                    if (playerOneDanger.includes(i) && !player2.inCheck) {
+                        playerTwoInCheck();
+                    // if not in danger anymore, remove from check
+                    } else if (!playerOneDanger.includes(i) && player2.inCheck) {
+                        removeTwoFromCheck();
+                    }
+                }
+            }
+        });
+
     }
 
     render() {
         const { board, player1, player2 } = this.props;
-
 
         return (
             <div id='board'>{
@@ -94,7 +121,6 @@ class Board extends Component {
                         key={i} piece={p} index={i}
                         board={board} handleMove={this.handleMove}
                         player1={player1} player2={player2}
-                        updateSelected={this.updateSelected}
                     />
                 })
             }</div>
@@ -108,4 +134,14 @@ Board.propTypes = {
     player2: PropTypes.object.isRequired
 };
 
-export default connect(null, { moveTo, showMove, updatePlayerOneDanger, updatePlayerTwoDanger })(Board);
+export default connect(null, {
+    moveTo,
+    showMove,
+    updatePlayerOneDanger,
+    updatePlayerTwoDanger,
+    playerOneInCheck,
+    playerTwoInCheck,
+    removeOneFromCheck,
+    removeTwoFromCheck
+}
+)(Board);
