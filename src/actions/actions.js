@@ -54,3 +54,5 @@ export const updatePlayerTwoDanger = dangerIndices => ({
     payload: dangerIndices
 });
 
+// If king is in a dangerIndex, it's in check
+

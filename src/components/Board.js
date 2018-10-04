@@ -29,15 +29,18 @@ class Board extends Component {
 
     componentDidUpdate() {
         const { board, player1, player2, showMove } = this.props;
+        let playerOneDanger = player1.dangerIndices;
+        let playerTwoDanger = player2.dangerIndices;
 
-        if (board.selected === null) {
-            console.log("player1.dangerIndices:", player1.dangerIndices);
-            console.log("player2.dangerIndices:", player2.dangerIndices);
-        }
+        console.log("state.p1.danger:", playerOneDanger);
+        console.log("state.p2.danger:", playerTwoDanger);
+
         // If there is a selected piece
         if (board.selected !== null) {
             // get the indices of the valid moves
-            let validIndices = getValidMoves(board.selected, board.layout, board.selected);
+            let validIndices = getValidMoves(
+                board.selected, board.layout, board.selected, playerOneDanger, playerTwoDanger
+            );
             // Update the state.validMoves with the indices. 
             // Only do it if it's empty, and there are valid moves to make
             if (board.validMoves.length === 0 && validIndices.length !== 0) {

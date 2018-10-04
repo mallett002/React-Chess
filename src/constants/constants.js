@@ -64,7 +64,7 @@ export const makeCoords = index => {
 // getValidMoves returns array of indices that the piece can move to
 // board is state.board.layout
 // selectedPiece: state.board.selected
-export const getValidMoves = (selectedPiece, board, stateSelected) => {
+export const getValidMoves = (selectedPiece, board, stateSelected, playerOneDanger = [], playerTwoDanger = []) => {
 
     const piece = selectedPiece.piece.name; 
 
@@ -73,7 +73,7 @@ export const getValidMoves = (selectedPiece, board, stateSelected) => {
     else if (piece === "bishop") return bishopRoutes(selectedPiece, board, stateSelected);
     else if (piece === "queen") return queenRoutes(selectedPiece, board, stateSelected);
     else if (piece === "knight") return knightRoutes(selectedPiece, board, stateSelected);
-    else if (piece === "king") return kingRoutes(selectedPiece, board, stateSelected);
+    else if (piece === "king") return kingRoutes(selectedPiece, board, stateSelected, playerOneDanger, playerTwoDanger);
     else if (piece === "pawn") return [];
 };
 
