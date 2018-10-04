@@ -1,4 +1,10 @@
-import { PIECE_TAKEN, PLAYERS_ADDED, UPDATE_PLAYER_TWO_DANGER } from '../actions/actions';
+import {
+    PIECE_TAKEN,
+    PLAYERS_ADDED,
+    UPDATE_PLAYER_TWO_DANGER,
+    P2_IN_CHECK,
+    REMOVE_2_FROM_CHECK
+} from '../actions/actions';
 
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
 // Want to know if a king is in check
@@ -32,6 +38,16 @@ const playerTwoReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dangerIndices: [...action.payload]
+            }
+        case P2_IN_CHECK:
+            return {
+                ...state,
+                inCheck: true
+            }
+        case REMOVE_2_FROM_CHECK:
+            return {
+                ...state,
+                inCheck: false
             }
         default:
             return state

@@ -27,7 +27,7 @@ class Box extends Component {
     // board is the Redux store for the board
     const { piece, coords, index,
       board, selectPiece, deselect, handleMove, addToFallen,
-      updatePlayerOneDanger, updatePlayerTwoDanger, updateSelected } = this.props;
+      updatePlayerOneDanger, updatePlayerTwoDanger } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -38,9 +38,6 @@ class Box extends Component {
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
       selectPiece(piece, index);
-
-      // and call parent updateSelected(piece) to pass it to the board's state
-      updateSelected(piece);
     }
 
     // If selected box is clicked again, deselect it

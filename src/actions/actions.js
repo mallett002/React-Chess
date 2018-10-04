@@ -6,6 +6,10 @@ export const PLAYERS_ADDED = 'PLAYERS_ADDED';
 export const SHOW_MOVE = 'SHOW_MOVE';
 export const UPDATE_PLAYER_ONE_DANGER = 'UPDATE_PLAYER_ONE_DANGER';
 export const UPDATE_PLAYER_TWO_DANGER = 'UPDATE_PLAYER_TWO_DANGER';
+export const P1_IN_CHECK = 'P1_IN_CHECK'
+export const P2_IN_CHECK = 'P2_IN_CHECK';
+export const REMOVE_1_FROM_CHECK = 'REMOVE_1_FROM_CHECK';
+export const REMOVE_2_FROM_CHECK = 'REMOVE_2_FROM_CHECK';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -55,4 +59,19 @@ export const updatePlayerTwoDanger = dangerIndices => ({
 });
 
 // If king is in a dangerIndex, it's in check
+export const playerOneInCheck = () => ({
+    type: P1_IN_CHECK
+});
 
+export const playerTwoInCheck = () => ({
+    type: P2_IN_CHECK
+});
+
+// If moved from check, take out of check
+export const removeOneFromCheck = () => ({
+    type: REMOVE_1_FROM_CHECK
+});
+
+export const removeTwoFromCheck = () => ({
+    type: REMOVE_2_FROM_CHECK
+});
