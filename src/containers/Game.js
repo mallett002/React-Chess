@@ -5,19 +5,32 @@ import { Link } from 'react-router-dom';
 // Components:
 import Board from '../components/Board';
 import FallenSoldiers from '../components/FallenSoldiers';
+import InCheckDisplay from '../components/InCheckDisplay';
+// Constants:
+import { isInCheck } from '../constants/constants';
 
 // Renders the board, the fallen soldiers lists, and a link back to exit the game
 class Game extends Component {
     render() {
         const { player1, player2, board } = this.props;
+        // get the user in check, or false to pass to <InCheckDisplay />
+        let userInCheck = isInCheck(player1, player2);
+
         return (
             <div className='game'>
-                {/*TODO- If in check, show here. "Will is in check!" something red*/}
+                <h1 className='title'>REACT CHESS</h1>
+
+                <div className='in-check-container'>
+                    {userInCheck && <InCheckDisplay user={userInCheck} />}
+                </div>
+                
                 <Board player1={player1} player2={player2} board={board} />
+
                 <div className='fallen-container'>
                     <FallenSoldiers user={player1} />
                     <FallenSoldiers user={player2} />
                 </div>
+
                 <Link exact='true' to='/'>Exit Game</Link>
             </div>
 

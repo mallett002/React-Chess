@@ -26,8 +26,6 @@ class Board extends Component {
 
     componentDidUpdate() {
         const { board, player1, player2, showMove } = this.props;
-        console.log("p1inCheck:", player1.inCheck);
-        console.log("p2inCheck:", player2.inCheck);
         let items = board.layout;
         let playerOneDanger = player1.dangerIndices;
         let playerTwoDanger = player2.dangerIndices;

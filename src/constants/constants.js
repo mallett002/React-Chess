@@ -86,3 +86,10 @@ export const onlyOneOfEach = array => {
     }
     return oneOfEach;
 };
+
+// returns the user that is in check, or false
+export const isInCheck = (player1, player2) => {
+    if (player1.inCheck) return player1.userName;
+    else if (player2.inCheck) return player2.userName;
+    else return false;
+};
