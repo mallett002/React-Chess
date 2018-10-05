@@ -3,6 +3,30 @@ li {
     list-style: none;
 }
 
+.body {
+    margin-top: 0;
+}
+
+/*TITLE*/
+.title {
+    margin: 10px 0;
+}
+
+/*In check display */
+.in-check-container {
+    height: 30px;
+}
+
+.in-check-display {
+    padding: 3px;
+    border: 3px solid #ab3737;
+    background: #de9ba6;
+    text-align: center;
+}
+.in-check-display p {
+    margin: 0;
+}
+
 /*BOARD --------------*/
 
 #board {
@@ -11,6 +35,7 @@ li {
     margin: 0px auto;
     display: flex;
     flex-flow: row wrap; 
+    margin-top: 8px;
 }
 
 .box {
@@ -50,11 +75,14 @@ li {
 
 .player {
     text-align: center;
+    margin: 0;
+    padding-top: 5px;
 }
 
 .fallen-list {
-    border: 1px solid #eaeaea;
+    border: 3px solid #695f5f;
     width: 48%;
+    background: #eaeaea;
 }
 
 .fallen-list ul {

@@ -66,7 +66,7 @@ class SetUpGame extends Component {
 
         return (
             <div>
-                <h1>REACT CHESS</h1>
+                <h1 className='title'>REACT CHESS</h1>
                 <h3>GAME SETUP</h3>
 
                 <form>
