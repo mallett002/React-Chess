@@ -3,6 +3,7 @@ import { bishopRoutes } from './bishopRoute';
 import { queenRoutes } from './queenRoute';
 import { knightRoutes } from './knightRoute';
 import { kingRoutes } from './kingRoute';
+import { pawnRoutes } from './pawnRoute';
 
 export const isLight = (n) => {
     if (n <= 7 ||
@@ -74,7 +75,7 @@ export const getValidMoves = (selectedPiece, board, stateSelected, playerOneDang
     else if (piece === "queen") return queenRoutes(selectedPiece, board, stateSelected);
     else if (piece === "knight") return knightRoutes(selectedPiece, board, stateSelected);
     else if (piece === "king") return kingRoutes(selectedPiece, board, stateSelected, playerOneDanger, playerTwoDanger);
-    else if (piece === "pawn") return [];
+    else if (piece === "pawn") return pawnRoutes(selectedPiece, board, stateSelected);
 };
 
 export const onlyOneOfEach = array => {
