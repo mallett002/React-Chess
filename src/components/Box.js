@@ -46,8 +46,8 @@ class Box extends Component {
       deselect();
     }
 
-    // If a piece is selected, & if clicked box is different than the selected one
-    if (board.selected !== null && index !== board.selected.index) {
+    // If a piece is selected, & if clicked box is different than the selected one, and if is a valid move for that piece
+    if (board.selected !== null && index !== board.selected.index && board.validMoves.includes(index)) {
       // If new index has a piece, and it's on the other team, add that to the fallen list
       if (piece.name !== "empty" && piece.team !== board.selected.piece.team) {
         let team = board.selected.piece.team;
