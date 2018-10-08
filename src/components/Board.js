@@ -11,7 +11,9 @@ import {
     playerOneInCheck,
     playerTwoInCheck, 
     removeOneFromCheck,
-    removeTwoFromCheck
+    removeTwoFromCheck,
+    p1MovedRookOrKing,
+    p2MovedRookOrKing
 } from '../actions/actions';
 import { isLight, makeCoords, getValidMoves, onlyOneOfEach } from '../constants/constants';
 
@@ -22,7 +24,6 @@ class Board extends Component {
         super(props);
         this.handleMove = this.handleMove.bind(this);
     }
-
 
     componentDidUpdate() {
         const { board, player1, player2, showMove } = this.props;
@@ -44,21 +45,29 @@ class Board extends Component {
         }
     }
 
-    // Dispatches an action to move the piece
+    // Dispatches actions to handle the move
     handleMove(from, to) {
         const {
             board, player1, player2, moveTo, 
             updatePlayerOneDanger, updatePlayerTwoDanger, playerOneInCheck, playerTwoInCheck, 
-            removeOneFromCheck, removeTwoFromCheck 
+            removeOneFromCheck, removeTwoFromCheck, p1MovedRookOrKing, p2MovedRookOrKing 
         } = this.props;
+
+        // Update player's state if rook or king moves (to know if player can castle or not)
+        if (board.layout[from].name === "king" || board.layout[from].name === "rook") {
+            let team = board.layout[from].team;
+            let piece = board.layout[from].name;
+            // update state with info
+            if (team === "player1") p1MovedRookOrKing();
+            else p2MovedRookOrKing();
+        }
 
         // move the piece 
         moveTo(from, to);
 
-        // Update the danger indices for both teams, every time after a piece is moved
+        // Update dangerIndices for both teams, every time after a piece is moved
         let playerOneDanger = [];
         let playerTwoDanger = [];
-
         // Look at the whole board, get all valid move indices for both teams. Update redux store with them.
         // Put them in either playerOneDanger or playerTwoDanger
         board.layout.forEach((item, index) => {
@@ -140,6 +149,8 @@ export default connect(null, {
     playerOneInCheck,
     playerTwoInCheck,
     removeOneFromCheck,
-    removeTwoFromCheck
+    removeTwoFromCheck, 
+    p1MovedRookOrKing,
+    p2MovedRookOrKing
 }
 )(Board);

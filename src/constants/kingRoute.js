@@ -5,6 +5,7 @@ import { makeCoords } from './constants';
 export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger, playerTwoDanger) => {
     let validIndices = [];
     let pieceIndices = [];
+    let castleIndices = [];
 
     board.forEach((box, i) => {
         // x, y of selectedPiece
@@ -14,7 +15,14 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
         // The danger indices are going to be dangerous for the opposite team's king
         let dangerIndices = selectedPiece.piece.team === "player1" ? playerTwoDanger : playerOneDanger;
 
-        // TODO- Be able to castle
+        // If able to castle, put that index in validIndices also
+        // Maybe pass an arg canCastle boolean, and only do this if true
+        if (selectedPiece.piece.team === "player1" && toCoords[1] === 7 && board[i].name !== "empty") {
+            castleIndices.push(i);
+            
+        } else if (selectedPiece.piece.team === "player2" && toCoords[1] === 0 && board[i].name !== "empty") {
+            castleIndices.push(i);    
+        }
 
         // if same x "same column"
         if (fromCoords[0] === toCoords[0] && Math.abs(fromCoords[1] - toCoords[1]) === 1 ||
@@ -38,5 +46,44 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
 
     });
 
+    let indicesRight = [];
+    let indicesLeft = [];
+
+    if (castleIndices.length > 0) {
+        // loop over castleIndices
+        castleIndices.forEach(index => {
+            // look right
+            if (index > selectedPiece.index) {
+                indicesRight.push(index);
+            // look left
+            } else if (index < selectedPiece.index) {
+                indicesLeft.push(index);
+            }
+        });
+        
+    }    
+    if (indicesRight.length === 1 && board[indicesRight[0]].name === "rook" /*&& canCastle*/) {
+        // add the index 2 to the right of selectedPiece's
+        validIndices = [...validIndices, selectedPiece.index + 2];
+    }
+    if (indicesLeft.length === 1 && board[indicesLeft[0]].name === "rook" /*&& canCastle*/) {
+        validIndices = [...validIndices, selectedPiece.index - 3];
+    }
+
     return validIndices;
 }
+
+/* Casteling Notes 
+
+Criteria to be met:
+    -King and rook haven't moved yet. 
+    -King isn't in check.
+    -No pieces between king and rook
+    -Doesn't cross over or end up on an index in check
+
+Need to do:
+    -[CHECK]keep track if the king and rook haven't moved (playerOneReducer). Once one has moved, put true
+    -[CHECK]update validIndices of king to show castle space (one more square to right or left)
+    - if able to castle and...
+    - if king moves to that castling square, move the 2 pieces at same time
+*/

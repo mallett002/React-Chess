@@ -10,6 +10,8 @@ export const P1_IN_CHECK = 'P1_IN_CHECK'
 export const P2_IN_CHECK = 'P2_IN_CHECK';
 export const REMOVE_1_FROM_CHECK = 'REMOVE_1_FROM_CHECK';
 export const REMOVE_2_FROM_CHECK = 'REMOVE_2_FROM_CHECK';
+export const P1_MOVED_ROOK_OR_KING = 'P1_MOVED_ROOK_OR_KING';
+export const P2_MOVED_ROOK_OR_KING = 'P2_MOVED_ROOK_OR_KING';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -74,4 +76,14 @@ export const removeOneFromCheck = () => ({
 
 export const removeTwoFromCheck = () => ({
     type: REMOVE_2_FROM_CHECK
+});
+
+// If moved rook or king (can't castle anymore)
+// player1
+export const p1MovedRookOrKing = () => ({
+    type: P1_MOVED_ROOK_OR_KING
+});
+// player2
+export const p2MovedRookOrKing = () => ({
+    type: P2_MOVED_ROOK_OR_KING
 });
