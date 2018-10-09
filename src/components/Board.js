@@ -62,10 +62,10 @@ class Board extends Component {
         // Update player's Redux store if rook or king moves (to know if player can castle or not)
         if (board.layout[from].name === "king" || board.layout[from].name === "rook") {
             let team = board.layout[from].team;
-            let piece = board.layout[from].name;
+            let id = board.layout[from].id;
             // update state with info
-            if (team === "player1") p1MovedRookOrKing();
-            else p2MovedRookOrKing();
+            if (team === "player1") p1MovedRookOrKing(id);
+            else p2MovedRookOrKing(id);
         }
 
         // move the piece 
