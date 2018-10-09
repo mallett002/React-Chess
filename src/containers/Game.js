@@ -15,8 +15,14 @@ class Game extends Component {
         super(props);
 
         this.state = {
-            playerOneCanCastle: false,
-            playerTwoCanCastle: false,
+            playerOne: {
+                canCastleRight: false,
+                canCastleLeft: false
+            },
+            playerTwo: {
+                canCastleRight: false,
+                canCastleLeft: false
+            },
             castleIndicesInDangerRight: false,
             castleIndicesInDangerLeft: false,
         };
@@ -26,17 +32,45 @@ class Game extends Component {
 
     componentDidUpdate() {
         const { board, player1, player2 } = this.props;
+        // If king is in check, put canCastle to false
         if (board.selected !== null) {
-            if (board.selected.piece.team === "player1" && player1.inCheck && this.state.playerOneCanCastle) {
-                this.setState({ playerOneCanCastle: false });
-
-            } else if (board.selected.piece.team === "player2" && player2.inCheck && this.state.playerTwoCanCastle) {
-                this.setState({ playerTwoCanCastle: false });
+            if (board.selected.piece.team === "player1" && player1.inCheck) {
+                if (this.state.playerOne.canCastleRight) {
+                    this.setState({ 
+                        playerOne: {
+                            ...this.state.playerOne,
+                            canCastleRight: false
+                        }});
+                } 
+                if (this.state.playerOne.canCastleLeft) {
+                    this.setState({ 
+                        playerOne: {
+                            ...this.state.playerOne,
+                            canCastleLeft: false
+                        }});
+                }
+                
+            } else if (board.selected.piece.team === "player2" && player2.inCheck) {
+                if (this.state.playerTwo.canCastleRight) {
+                    this.setState({
+                        playerTwo: {
+                            ...this.state.playerTwo,
+                            canCastleRight: false
+                        }});
+                }
+                if (this.state.playerTwo.canCastleLeft) {
+                    this.setState({ 
+                        playerTwo: {
+                            ...this.state.playerTwo,
+                            canCastleLeft: false
+                        }});
+                }
             }
 
         }
-        console.log("player1.rookOrKingMoved:", player1.rookOrKingMoved);
-        console.log("playerOneCanCastle:", this.state.playerOneCanCastle);
+        
+        console.log("playerOneCanCastle:", this.state.playerOne);
+        console.log("playerTwoCanCastle:", this.state.playerTwo);
     }
 
     // Look at board and see if given player can castle
@@ -69,8 +103,7 @@ class Game extends Component {
                     let selectedCoords = makeCoords(selectedPiece.index);
                     let searchCoords = makeCoords(i);
                     // only the same row as the king 
-                    if (searchCoords[1] === selectedCoords[1] && selectedPiece.piece.team === "player1" 
-                        || searchCoords[1] === selectedCoords[1] && selectedPiece.piece.team === "player2") {
+                    if (searchCoords[1] === selectedCoords[1]) {
                         // look right
                         if (i > selectedPiece.index) indicesRight.push(i);
                         if (i > selectedPiece.index && board.layout[i].name !== "empty") {
@@ -103,13 +136,19 @@ class Game extends Component {
                         if (!this.state.castleIndicesInDangerRight && !player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
                             && !player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerOneCanCastle: true
+                                playerOne: { 
+                                    ...this.state.playerOne,
+                                    canCastleRight: true 
+                                }
                             });
                             // If any in danger or have moved the rook, set it to false
                         } else if (this.state.castleIndicesInDangerRight || player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
                             || player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerOneCanCastle: false
+                                playerOne: { 
+                                    ...this.state.playerOne,
+                                    canCastleRight: false 
+                                }
                             });
                         }
                         // PLAYER 2---------------------------------------------    
@@ -124,16 +163,39 @@ class Game extends Component {
                         if (!this.state.castleIndicesInDangerRight && !player2.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
                             && !player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerTwoCanCastle: true
+                                playerTwo: { 
+                                    ...this.state.playerTwo,
+                                    canCastleRight: true 
+                                }
                             });
                             // If any in danger or moved the rook or the king, set it to false
                         } else if (this.state.castleIndicesInDangerRight || player2.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
                             || player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerTwoCanCastle: false
+                                playerTwo: { 
+                                    ...this.state.playerTwo,
+                                    canCastleRight: false 
+                                }
                             });
                         }
                     }
+                }
+            } else if (piecesRight.length === 1 && board.layout[piecesRight[0]].name !== "rook" 
+                || piecesRight.length > 1 || piecesRight.length === 0) {
+                if (board.selected.piece.team === "player1") {
+                    this.setState({
+                        playerOne: { 
+                            ...this.state.playerOne,
+                            canCastleRight: false 
+                        }
+                    });
+                } else if (board.selected.piece.team === "player2") {
+                    this.setState({
+                        playerTwo: { 
+                            ...this.state.playerTwo,
+                            canCastleRight: false 
+                        }
+                    });
                 }
             }
 
@@ -155,13 +217,19 @@ class Game extends Component {
                         if (!this.state.castleIndicesInDangerLeft  && !player1.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
                             && !player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerOneCanCastle: true
+                                playerOne: { 
+                                    ...this.state.playerOne,
+                                    canCastleLeft: true 
+                                }
                             });
                             // If any in danger, set it to false
                         } else if (this.state.castleIndicesInDangerLeft || player1.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
                             || player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerOneCanCastle: false
+                                playerOne: { 
+                                    ...this.state.playerOne,
+                                    canCastleLeft: false 
+                                }
                             });
                         }
                     // PLAYER 2 -----------------------------------------
@@ -177,16 +245,39 @@ class Game extends Component {
                         if (!this.state.castleIndicesInDangerLeft && !player2.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
                             && !player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerTwoCanCastle: true
+                                playerTwo: { 
+                                    ...this.state.playerTwo,
+                                    canCastleLeft: true 
+                                }
                             });
                             // If any in danger, set it to false
                         } else if (this.state.castleIndicesInDangerLeft || player2.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
                             || player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
-                                playerTwoCanCastle: false
+                                playerTwo: { 
+                                    ...this.state.playerTwo,
+                                    canCastleLeft: false 
+                                }
                             });
                         }
                     }
+                }
+            } else if (piecesLeft.length === 1 && board.layout[piecesLeft[0]].name !== "rook" || 
+                piecesLeft.length > 1 || piecesLeft.length === 0) {
+                if (board.selected.piece.team === "player1") {
+                    this.setState({
+                        playerOne: { 
+                            ...this.state.playerOne,
+                            canCastleLeft: false 
+                        }
+                    });
+                } else if (board.selected.piece.team === "player2") {
+                    this.setState({
+                        playerTwo: { 
+                            ...this.state.playerTwo,
+                            canCastleLeft: false 
+                        }
+                    });
                 }
             }
 
