@@ -80,10 +80,12 @@ export const removeTwoFromCheck = () => ({
 
 // If moved rook or king (can't castle anymore)
 // player1
-export const p1MovedRookOrKing = () => ({
-    type: P1_MOVED_ROOK_OR_KING
+export const p1MovedRookOrKing = id => ({
+    type: P1_MOVED_ROOK_OR_KING,
+    payload: id
 });
 // player2
-export const p2MovedRookOrKing = () => ({
-    type: P2_MOVED_ROOK_OR_KING
+export const p2MovedRookOrKing = id => ({
+    type: P2_MOVED_ROOK_OR_KING,
+    payload: id
 });

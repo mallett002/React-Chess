@@ -35,7 +35,8 @@ class Game extends Component {
             }
 
         }
-        console.log("playerTwoCanCastle:", this.state.playerTwoCanCastle);
+        console.log("player1.rookOrKingMoved:", player1.rookOrKingMoved);
+        console.log("playerOneCanCastle:", this.state.playerOneCanCastle);
     }
 
     // Look at board and see if given player can castle
@@ -67,11 +68,9 @@ class Game extends Component {
                 board.layout.forEach((item, i) => {
                     let selectedCoords = makeCoords(selectedPiece.index);
                     let searchCoords = makeCoords(i);
-                    // only the same row as the king and a king or rook hasn't moved
-                    if (searchCoords[1] === selectedCoords[1]
-                        && selectedPiece.piece.team === "player1" && !player1.rookOrKingMoved
-                        || searchCoords[1] === selectedCoords[1]
-                        && selectedPiece.piece.team === "player2" && !player2.rookOrKingMoved) {
+                    // only the same row as the king 
+                    if (searchCoords[1] === selectedCoords[1] && selectedPiece.piece.team === "player1" 
+                        || searchCoords[1] === selectedCoords[1] && selectedPiece.piece.team === "player2") {
                         // look right
                         if (i > selectedPiece.index) indicesRight.push(i);
                         if (i > selectedPiece.index && board.layout[i].name !== "empty") {
@@ -87,7 +86,7 @@ class Game extends Component {
             }
 
             // Check if any indices right are in danger
-            // If only one in piecesRight and it's a rook
+            // If only one in piecesRight, and it's a rook and it hasn't moved
             if (piecesRight.length === 1 && board.layout[piecesRight[0]].name === "rook") {
                 // look at all indicesRight except the last one with the rook
                 for (let i = 0; i < indicesRight.length - 1; i++) {
@@ -100,13 +99,15 @@ class Game extends Component {
                             });
                         }
 
-                        // If castleIndicesInDangerRight is false, able to castle
-                        if (!this.state.castleIndicesInDangerRight) {
+                        // If castleIndicesInDangerRight is false and the rook or king hasn't moved, able to castle
+                        if (!this.state.castleIndicesInDangerRight && !player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
+                            && !player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerOneCanCastle: true
                             });
-                            // If any in danger, set it to false
-                        } else if (this.state.castleIndicesInDangerRight) {
+                            // If any in danger or have moved the rook, set it to false
+                        } else if (this.state.castleIndicesInDangerRight || player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
+                            || player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerOneCanCastle: false
                             });
@@ -119,13 +120,15 @@ class Game extends Component {
                             });
                         }
 
-                        // If castleIndicesInDangerRight is false, able to castle
-                        if (!this.state.castleIndicesInDangerRight) {
+                        // If castleIndicesInDangerRight is false and the rook or king haven't moved, able to castle
+                        if (!this.state.castleIndicesInDangerRight && !player2.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
+                            && !player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerTwoCanCastle: true
                             });
-                            // If any in danger, set it to false
-                        } else if (this.state.castleIndicesInDangerRight) {
+                            // If any in danger or moved the rook or the king, set it to false
+                        } else if (this.state.castleIndicesInDangerRight || player2.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)
+                            || player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerTwoCanCastle: false
                             });
@@ -148,13 +151,15 @@ class Game extends Component {
                             });
                         }
 
-                        // If castleIndicesInDangerLeft is false, able to castle
-                        if (!this.state.castleIndicesInDangerLeft) {
+                        // If castleIndicesInDangerLeft is false and haven't moved rook or king, able to castle
+                        if (!this.state.castleIndicesInDangerLeft  && !player1.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
+                            && !player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerOneCanCastle: true
                             });
                             // If any in danger, set it to false
-                        } else if (this.state.castleIndicesInDangerLeft) {
+                        } else if (this.state.castleIndicesInDangerLeft || player1.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
+                            || player1.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerOneCanCastle: false
                             });
@@ -169,12 +174,14 @@ class Game extends Component {
                         }
 
                         // If castleIndicesInDangerLeft is false, able to castle
-                        if (!this.state.castleIndicesInDangerLeft) {
+                        if (!this.state.castleIndicesInDangerLeft && !player2.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
+                            && !player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerTwoCanCastle: true
                             });
                             // If any in danger, set it to false
-                        } else if (this.state.castleIndicesInDangerLeft) {
+                        } else if (this.state.castleIndicesInDangerLeft || player2.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)
+                            || player2.rookOrKingMoved.includes(board.selected.piece.id)) {
                             this.setState({
                                 playerTwoCanCastle: false
                             });

@@ -19,7 +19,7 @@ const initialState = {
     dangerIndices: [],
     inCheck: false,
     isTurn: false,
-    rookOrKingMoved: false
+    rookOrKingMoved: []
 };
 
 const playerTwoReducer = (state = initialState, action) => {
@@ -54,7 +54,8 @@ const playerTwoReducer = (state = initialState, action) => {
         case P2_MOVED_ROOK_OR_KING:
             return {
                 ...state,
-                rookOrKingMoved: true
+                rookOrKingMoved: !state.rookOrKingMoved.includes(action.payload) ? [...state.rookOrKingMoved, action.payload]
+                    : [...state.rookOrKingMoved]
             }
         default:
             return state
