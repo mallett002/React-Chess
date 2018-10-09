@@ -3,7 +3,8 @@ import {
     PLAYERS_ADDED,
     UPDATE_PLAYER_TWO_DANGER,
     P2_IN_CHECK,
-    REMOVE_2_FROM_CHECK
+    REMOVE_2_FROM_CHECK,
+    P2_MOVED_ROOK_OR_KING
 } from '../actions/actions';
 
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
@@ -17,7 +18,8 @@ const initialState = {
     piecesOut: [],
     dangerIndices: [],
     inCheck: false,
-    isTurn: false
+    isTurn: false,
+    rookOrKingMoved: false
 };
 
 const playerTwoReducer = (state = initialState, action) => {
@@ -48,6 +50,11 @@ const playerTwoReducer = (state = initialState, action) => {
             return {
                 ...state,
                 inCheck: false
+            }
+        case P2_MOVED_ROOK_OR_KING:
+            return {
+                ...state,
+                rookOrKingMoved: true
             }
         default:
             return state

@@ -7,10 +7,188 @@ import Board from '../components/Board';
 import FallenSoldiers from '../components/FallenSoldiers';
 import InCheckDisplay from '../components/InCheckDisplay';
 // Constants:
-import { isInCheck } from '../constants/constants';
+import { isInCheck, makeCoords } from '../constants/constants';
 
 // Renders the board, the fallen soldiers lists, and a link back to exit the game
 class Game extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            playerOneCanCastle: false,
+            playerTwoCanCastle: false,
+            castleIndicesInDangerRight: false,
+            castleIndicesInDangerLeft: false,
+        };
+
+        this.canCastle = this.canCastle.bind(this);
+    }
+
+    componentDidUpdate() {
+        const { board, player1, player2 } = this.props;
+        if (board.selected !== null) {
+            if (board.selected.piece.team === "player1" && player1.inCheck && this.state.playerOneCanCastle) {
+                this.setState({ playerOneCanCastle: false });
+
+            } else if (board.selected.piece.team === "player2" && player2.inCheck && this.state.playerTwoCanCastle) {
+                this.setState({ playerTwoCanCastle: false });
+            }
+
+        }
+        console.log("playerTwoCanCastle:", this.state.playerTwoCanCastle);
+    }
+
+    // Look at board and see if given player can castle
+    canCastle() {
+        // if castleIndicesInDanger is true, set it back to false before determining that it is possible
+        if (this.state.castleIndicesInDangerRight) {
+            this.setState({
+                castleIndicesInDangerRight: false
+            });
+        }
+
+        if (this.state.castleIndicesInDangerLeft) {
+            this.setState({
+                castleIndicesInDangerLeft: false
+            });
+        }
+
+        let indicesRight = [];
+        let indicesLeft = [];
+        let piecesLeft = [];
+        let piecesRight = [];
+        // Using a timeout here so it has time to update the state.selectedPiece
+        setTimeout(() => {
+            const { board, player1, player2 } = this.props;
+            if (board.selected !== null && board.selected.piece.name === "king") {
+                let selectedPiece = board.selected;
+
+                // look at the board
+                board.layout.forEach((item, i) => {
+                    let selectedCoords = makeCoords(selectedPiece.index);
+                    let searchCoords = makeCoords(i);
+                    // only the same row as the king and a king or rook hasn't moved
+                    if (searchCoords[1] === selectedCoords[1]
+                        && selectedPiece.piece.team === "player1" && !player1.rookOrKingMoved
+                        || searchCoords[1] === selectedCoords[1]
+                        && selectedPiece.piece.team === "player2" && !player2.rookOrKingMoved) {
+                        // look right
+                        if (i > selectedPiece.index) indicesRight.push(i);
+                        if (i > selectedPiece.index && board.layout[i].name !== "empty") {
+                            piecesRight.push(i);
+                        }
+                        // look left
+                        if (i < selectedPiece.index) indicesLeft.push(i);
+                        if (i < selectedPiece.index && board.layout[i].name !== "empty") {
+                            piecesLeft.push(i);
+                        }
+                    }
+                });
+            }
+
+            // Check if any indices right are in danger
+            // If only one in piecesRight and it's a rook
+            if (piecesRight.length === 1 && board.layout[piecesRight[0]].name === "rook") {
+                // look at all indicesRight except the last one with the rook
+                for (let i = 0; i < indicesRight.length - 1; i++) {
+                    // Make sure the indices aren't in danger (except for the rook)
+                    if (board.selected.piece.team === "player1") {
+                        // If any indicesRight are in danger, put castleIndicesInDangerRight: true
+                        if (player2.dangerIndices.includes(indicesRight[i])) {
+                            this.setState({
+                                castleIndicesInDangerRight: true
+                            });
+                        }
+
+                        // If castleIndicesInDangerRight is false, able to castle
+                        if (!this.state.castleIndicesInDangerRight) {
+                            this.setState({
+                                playerOneCanCastle: true
+                            });
+                            // If any in danger, set it to false
+                        } else if (this.state.castleIndicesInDangerRight) {
+                            this.setState({
+                                playerOneCanCastle: false
+                            });
+                        }
+                        // PLAYER 2---------------------------------------------    
+                    } else if (board.selected.piece.team === "player2") {
+                        if (player1.dangerIndices.includes(indicesRight[i])) {
+                            this.setState({
+                                castleIndicesInDangerRight: true
+                            });
+                        }
+
+                        // If castleIndicesInDangerRight is false, able to castle
+                        if (!this.state.castleIndicesInDangerRight) {
+                            this.setState({
+                                playerTwoCanCastle: true
+                            });
+                            // If any in danger, set it to false
+                        } else if (this.state.castleIndicesInDangerRight) {
+                            this.setState({
+                                playerTwoCanCastle: false
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Check if any indices left are in danger
+            // If only one in piecesLeft and it's a rook
+            if (piecesLeft.length === 1 && board.layout[piecesLeft[0]].name === "rook") {
+                // loop backwards bc we don't need to look at the first one, the rook
+                for (let i = indicesLeft.length - 1; i > 0; i--) {
+                    // Make sure the indices aren't in danger 
+                    if (board.selected.piece.team === "player1") {
+                        // If any indicesLeft are in danger, put castleIndicesInDangerLeft: true
+                        if (player2.dangerIndices.includes(indicesLeft[i])) {
+                            this.setState({
+                                castleIndicesInDangerLeft: true
+                            });
+                        }
+
+                        // If castleIndicesInDangerLeft is false, able to castle
+                        if (!this.state.castleIndicesInDangerLeft) {
+                            this.setState({
+                                playerOneCanCastle: true
+                            });
+                            // If any in danger, set it to false
+                        } else if (this.state.castleIndicesInDangerLeft) {
+                            this.setState({
+                                playerOneCanCastle: false
+                            });
+                        }
+                    // PLAYER 2 -----------------------------------------
+                    } else if (board.selected.piece.team === "player2") {
+                        // If any indicesLeft are in danger, put castleIndicesInDangerLeft: true
+                        if (player1.dangerIndices.includes(indicesLeft[i])) {
+                            this.setState({
+                                castleIndicesInDangerLeft: true
+                            });
+                        }
+
+                        // If castleIndicesInDangerLeft is false, able to castle
+                        if (!this.state.castleIndicesInDangerLeft) {
+                            this.setState({
+                                playerTwoCanCastle: true
+                            });
+                            // If any in danger, set it to false
+                        } else if (this.state.castleIndicesInDangerLeft) {
+                            this.setState({
+                                playerTwoCanCastle: false
+                            });
+                        }
+                    }
+                }
+            }
+
+        }, 1);
+
+
+    }
+
+
     render() {
         const { player1, player2, board } = this.props;
         // get the user in check, or false to pass to <InCheckDisplay />
@@ -23,8 +201,8 @@ class Game extends Component {
                 <div className='in-check-container'>
                     {userInCheck && <InCheckDisplay user={userInCheck} />}
                 </div>
-                
-                <Board player1={player1} player2={player2} board={board} />
+
+                <Board player1={player1} player2={player2} board={board} canCastle={this.canCastle} />
 
                 <div className='fallen-container'>
                     <FallenSoldiers user={player1} />

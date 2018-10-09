@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
-import { isLight, getValidMoves } from '../constants/constants';
+import { isLight } from '../constants/constants';
 import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, } from '../actions/actions';
 
 // Components
@@ -38,6 +38,7 @@ class Box extends Component {
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
       selectPiece(piece, index);
+      this.props.canCastle();
     }
 
     // If selected box is clicked again, deselect it
@@ -46,14 +47,16 @@ class Box extends Component {
       deselect();
     }
 
+    // Handling a move
     // If a piece is selected, & if clicked box is different than the selected one, and if is a valid move for that piece
     if (board.selected !== null && index !== board.selected.index && board.validMoves.includes(index)) {
+
       // If new index has a piece, and it's on the other team, add that to the fallen list
       if (piece.name !== "empty" && piece.team !== board.selected.piece.team) {
         let team = board.selected.piece.team;
         let selected = board.selected;
         addToFallen(piece);
-        // insert "selected" into "index": handleMove(from, to)
+        // Call Board's handleMove(from, to)
         handleMove(board.selected.index, index);
       }
 
