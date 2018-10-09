@@ -9,11 +9,12 @@ import {
     updatePlayerOneDanger,
     updatePlayerTwoDanger,
     playerOneInCheck,
-    playerTwoInCheck, 
+    playerTwoInCheck,
     removeOneFromCheck,
     removeTwoFromCheck,
     p1MovedRookOrKing,
-    p2MovedRookOrKing
+    p2MovedRookOrKing,
+    selectPiece
 } from '../actions/actions';
 import { isLight, makeCoords, getValidMoves, onlyOneOfEach } from '../constants/constants';
 
@@ -23,6 +24,7 @@ class Board extends Component {
     constructor(props) {
         super(props);
         this.handleMove = this.handleMove.bind(this);
+        this.canCastle = this.canCastle.bind(this);
     }
 
     componentDidUpdate() {
@@ -45,15 +47,19 @@ class Board extends Component {
         }
     }
 
+    canCastle() {
+        this.props.canCastle();
+    }
+
     // Dispatches actions to handle the move
     handleMove(from, to) {
         const {
-            board, player1, player2, moveTo, 
-            updatePlayerOneDanger, updatePlayerTwoDanger, playerOneInCheck, playerTwoInCheck, 
-            removeOneFromCheck, removeTwoFromCheck, p1MovedRookOrKing, p2MovedRookOrKing 
+            board, player1, player2, moveTo,
+            updatePlayerOneDanger, updatePlayerTwoDanger, playerOneInCheck, playerTwoInCheck,
+            removeOneFromCheck, removeTwoFromCheck, p1MovedRookOrKing, p2MovedRookOrKing
         } = this.props;
 
-        // Update player's state if rook or king moves (to know if player can castle or not)
+        // Update player's Redux store if rook or king moves (to know if player can castle or not)
         if (board.layout[from].name === "king" || board.layout[from].name === "rook") {
             let team = board.layout[from].team;
             let piece = board.layout[from].name;
@@ -98,7 +104,7 @@ class Board extends Component {
                     // check if the index is in the other team's dangerIndices & not currently in check
                     if (playerTwoDanger.includes(i) && !player1.inCheck) {
                         playerOneInCheck();
-                    // take it out of check if not in danger anymore
+                        // take it out of check if not in danger anymore
                     } else if (!playerTwoDanger.includes(i) && player1.inCheck) {
                         removeOneFromCheck();
                     }
@@ -108,14 +114,13 @@ class Board extends Component {
                     // check if the index is in the other team's dangerIndices
                     if (playerOneDanger.includes(i) && !player2.inCheck) {
                         playerTwoInCheck();
-                    // if not in danger anymore, remove from check
+                        // if not in danger anymore, remove from check
                     } else if (!playerOneDanger.includes(i) && player2.inCheck) {
                         removeTwoFromCheck();
                     }
                 }
             }
         });
-
     }
 
     render() {
@@ -127,7 +132,7 @@ class Board extends Component {
                     return <Box coords={makeCoords(i)}
                         key={i} piece={p} index={i}
                         board={board} handleMove={this.handleMove}
-                        player1={player1} player2={player2}
+                        player1={player1} player2={player2} canCastle={this.canCastle}
                     />
                 })
             }</div>
@@ -149,7 +154,7 @@ export default connect(null, {
     playerOneInCheck,
     playerTwoInCheck,
     removeOneFromCheck,
-    removeTwoFromCheck, 
+    removeTwoFromCheck,
     p1MovedRookOrKing,
     p2MovedRookOrKing
 }

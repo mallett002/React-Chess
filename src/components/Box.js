@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
-import { isLight, getValidMoves } from '../constants/constants';
+import { isLight } from '../constants/constants';
 import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, } from '../actions/actions';
 
 // Components
@@ -38,6 +38,7 @@ class Box extends Component {
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
       selectPiece(piece, index);
+      this.props.canCastle();
     }
 
     // If selected box is clicked again, deselect it
