@@ -28,16 +28,19 @@ class Board extends Component {
     }
 
     componentDidUpdate() {
-        const { board, player1, player2, showMove } = this.props;
+        const { board, player1, player2, showMove, castlePackage } = this.props;
         let items = board.layout;
         let playerOneDanger = player1.dangerIndices;
         let playerTwoDanger = player2.dangerIndices;
+        let playerOneCastle = castlePackage.playerOne;
+        let playerTwoCastle = castlePackage.playerTwo;
 
         // If there is a selected piece
         if (board.selected !== null) {
             // get the indices of the valid moves
             let validIndices = getValidMoves(
-                board.selected, board.layout, board.selected, playerOneDanger, playerTwoDanger
+                board.selected, board.layout, board.selected, 
+                playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
             );
             // Update the state.validMoves with the indices. 
             // Only do it if it's empty, and there are valid moves to make
@@ -47,8 +50,8 @@ class Board extends Component {
         }
     }
 
-    canCastle() {
-        this.props.canCastle();
+    canCastle(selectedPiece, index) {
+        this.props.canCastle(selectedPiece, index);
     }
 
     // Dispatches actions to handle the move
@@ -71,7 +74,7 @@ class Board extends Component {
         // move the piece 
         moveTo(from, to);
 
-        // Update dangerIndices for both teams, every time after a piece is moved
+        // Update dangerIndices for both teams every time after a piece is moved
         let playerOneDanger = [];
         let playerTwoDanger = [];
         // Look at the whole board, get all valid move indices for both teams. Update redux store with them.
@@ -124,7 +127,7 @@ class Board extends Component {
     }
 
     render() {
-        const { board, player1, player2 } = this.props;
+        const { board, player1, player2, castlePackage } = this.props;
 
         return (
             <div id='board'>{
@@ -133,6 +136,7 @@ class Board extends Component {
                         key={i} piece={p} index={i}
                         board={board} handleMove={this.handleMove}
                         player1={player1} player2={player2} canCastle={this.canCastle}
+                        castlePackage={castlePackage}
                     />
                 })
             }</div>

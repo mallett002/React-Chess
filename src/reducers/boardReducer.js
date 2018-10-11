@@ -1,4 +1,4 @@
-import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE } from '../actions/actions';
+import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE } from '../actions/actions';
 
 let initialState = {
   layout: [
@@ -47,6 +47,18 @@ const boardReducer = (state = initialState, action) => {
                 ...state.layout[action.payload.to] = state.selected.piece,
                 // set index of "from" to be an "empty" one
                 ...state.layout[action.payload.from] = {name:"empty"},
+                selected: null,
+                validMoves: []
+            }
+        case PERFORM_CASTLE:
+            return {
+                ...state,
+                // Move the king
+                ...state.layout[action.payload.oldKingIndex] = {name: "empty"},
+                ...state.layout[action.payload.newKingIndex] = state.selected.piece,
+                // Move the rook
+                ...state.layout[action.payload.newRookIndex] = state.layout[action.payload.oldRookIndex],
+                ...state.layout[action.payload.oldRookIndex] = { name: "empty" },
                 selected: null,
                 validMoves: []
             }

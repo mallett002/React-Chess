@@ -2,7 +2,8 @@ import { makeCoords } from './constants';
 
 // board is the board
 // selectedPiece is the piece that is currently selected
-export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger, playerTwoDanger) => {
+export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
+    playerTwoDanger, playerOneCastle, playerTwoCastle) => {
     let validIndices = [];
     let pieceIndices = [];
     let castleIndices = [];
@@ -19,9 +20,9 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
         // Maybe pass an arg canCastle boolean, and only do this if true
         if (selectedPiece.piece.team === "player1" && toCoords[1] === 7 && board[i].name !== "empty") {
             castleIndices.push(i);
-            
+
         } else if (selectedPiece.piece.team === "player2" && toCoords[1] === 0 && board[i].name !== "empty") {
-            castleIndices.push(i);    
+            castleIndices.push(i);
         }
 
         // if same x "same column"
@@ -38,7 +39,7 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
                 }
             } else if (board[i].name === "empty" && stateSelected !== null && !dangerIndices.includes(i)) {
                 validIndices.push(i);
-            // Get this king's dangerIndices 
+                // Get this king's dangerIndices 
             } else if (stateSelected === null) {
                 validIndices.push(i);
             }
@@ -55,19 +56,40 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
             // look right
             if (index > selectedPiece.index) {
                 indicesRight.push(index);
-            // look left
+                // look left
             } else if (index < selectedPiece.index) {
                 indicesLeft.push(index);
             }
         });
-        
-    }    
-    if (indicesRight.length === 1 && board[indicesRight[0]].name === "rook" /*&& canCastle*/) {
-        // add the index 2 to the right of selectedPiece's
-        validIndices = [...validIndices, selectedPiece.index + 2];
+
     }
-    if (indicesLeft.length === 1 && board[indicesLeft[0]].name === "rook" /*&& canCastle*/) {
-        validIndices = [...validIndices, selectedPiece.index - 3];
+    // Add castle index if can castle
+    // Looking Right. If only a rook there
+    if (indicesRight.length === 1 && board[indicesRight[0]].name === "rook") {
+        // If it's player1 and can castle right, update that index in validIndices
+        if (selectedPiece.piece.team === "player1" && playerOneCastle !== null) {
+            if (playerOneCastle.castleRight) {
+                validIndices = [...validIndices, selectedPiece.index + 2];
+            }
+        // If it's player2 and can castle right, update that index in validIndices
+        } else if (selectedPiece.piece.team === "player2" && playerTwoCastle !== null) {
+            if (playerTwoCastle.castleRight) {
+                validIndices = [...validIndices, selectedPiece.index + 2];
+            }
+        }
+    }
+    // Looking Left. If only a rook there
+    if (indicesLeft.length === 1 && board[indicesLeft[0]].name === "rook") {
+        // If it's player1 and can castle left, update that index in validIndices
+        if (selectedPiece.piece.team === "player1" && playerOneCastle !== null) {
+            if (playerOneCastle.castleLeft) {
+                validIndices = [...validIndices, selectedPiece.index - 3];
+            }
+        } else if (selectedPiece.piece.team === "player2" && playerTwoCastle !== null) {
+            if (playerTwoCastle.castleLeft) {
+                validIndices = [...validIndices, selectedPiece.index - 3];
+            }
+        }
     }
 
     return validIndices;
@@ -84,6 +106,6 @@ Criteria to be met:
 Need to do:
     -[CHECK]keep track if the king and rook haven't moved (playerOneReducer). Once one has moved, put true
     -[CHECK]update validIndices of king to show castle space (one more square to right or left)
-    - if able to castle and...
+    -[CHECK]highlight the castle squares only if can castle
     - if king moves to that castling square, move the 2 pieces at same time
 */

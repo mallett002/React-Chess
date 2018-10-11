@@ -12,6 +12,7 @@ export const REMOVE_1_FROM_CHECK = 'REMOVE_1_FROM_CHECK';
 export const REMOVE_2_FROM_CHECK = 'REMOVE_2_FROM_CHECK';
 export const P1_MOVED_ROOK_OR_KING = 'P1_MOVED_ROOK_OR_KING';
 export const P2_MOVED_ROOK_OR_KING = 'P2_MOVED_ROOK_OR_KING';
+export const PERFORM_CASTLE = 'PERFORM_CASTLE'
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -88,4 +89,15 @@ export const p1MovedRookOrKing = id => ({
 export const p2MovedRookOrKing = id => ({
     type: P2_MOVED_ROOK_OR_KING,
     payload: id
+});
+
+//Perform a castle
+export const performCastle = (oldKingIndex, newKingIndex, oldRookIndex, newRookIndex) => ({
+    type: PERFORM_CASTLE,
+    payload: {
+        oldKingIndex: oldKingIndex,
+        newKingIndex: newKingIndex,
+        oldRookIndex: oldRookIndex,
+        newRookIndex: newRookIndex
+    }
 });
