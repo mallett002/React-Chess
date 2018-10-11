@@ -15,23 +15,14 @@ class Game extends Component {
         super(props);
 
         this.state = {
-            playerOne: {
-                castleRight: false,
-                castleLeft: false
-            },
-            playerTwo: {
-                castleRight: false,
-                castleLeft: false
-            }
+            oneCastleRight: false,
+            oneCastleLeft: false,
+            twoCastleRight: false,
+            twoCastleLeft: false
         };
 
         this.canCastle = this.canCastle.bind(this);
     }
-
-    componentDidUpdate() {
-        console.log("player1castle:", this.state.playerOne);
-    }
-
 
     // Look at board and see if given player can castle
     canCastle(selectedPiece, selectedIndex) {
@@ -49,24 +40,21 @@ class Game extends Component {
             if (player1.rookOrKingMoved.includes(selectedPiece.id)
                 || player1.inCheck) {
                 this.setState({
-                    playerOne: {
-                        castleRight: false,
-                        castleLeft: false
-                    },
+                    oneCastleRight: false,
+                    oneCastleLeft: false
                 });
             }
         } else {
             if (player2.rookOrKingMoved.includes(selectedPiece.id)
                 || player2.inCheck) {
                 this.setState({
-                    playerTwo: {
-                        castleRight: false,
-                        castleLeft: false
-                    },
+                    twoCastleRight: false,
+                    twoCastleLeft: false
                 });
             }
         }
 
+        // Player1-------------------------------------------------------------------------------------------------
         // If not in check, and king hasn't moved, check the indices right and left
         if (selectedPiece.team === "player1") {
             if (!player1.rookOrKingMoved.includes(selectedPiece.id) && !player1.inCheck) {
@@ -81,7 +69,7 @@ class Game extends Component {
                             indicesRight.push(i);
                             // if a piece, put it in piecesRight
                             if (board.layout[i].name !== "empty") piecesRight.push(i);
-                        // look left
+                            // look left
                         } else if (selectedCoords[0] > indexCoords[0]) {
                             indicesLeft.push(i);
                             // if a piece, put it in indicesLeft
@@ -89,18 +77,15 @@ class Game extends Component {
                         }
                     }
                 });
-
+                // Right
                 // Check if more than just 1 piece to the right, or if none. If so, can't castle right
                 if (piecesRight.length > 1 || piecesRight.length === 0) {
                     this.setState({
-                        playerOne: {
-                            ...this.state.playerOne,
-                            castleRight: false
-                        }
+                        oneCastleRight: false
                     });
                 // check if only 1 has a piece and it's a rook and it hasn't moved
-                } else if (piecesRight.length === 1 && board.layout[piecesRight[0]].name === "rook" 
-                && !player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)) {
+                } else if (piecesRight.length === 1 && board.layout[piecesRight[0]].name === "rook"
+                    && !player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)) {
                     // check if any of the indicesRight are in danger, except for the rook, if so can't castle
                     for (let i = 0; i < indicesRight.length - 1; i++) {
                         if (player2.dangerIndices.includes(indicesRight[i])) inDangerRight = true;
@@ -108,32 +93,55 @@ class Game extends Component {
                     // if none are in danger, player1 can castle right
                     if (!inDangerRight) {
                         this.setState({
-                            playerOne: {
-                                ...this.state.playerOne,
-                                castleRight: true
-                            }
+                            oneCastleRight: true
                         });
                     } else if (inDangerRight) {
                         this.setState({
-                            playerOne: {
-                                ...this.state.playerOne,
-                                castleRight: false
-                            }
+                            oneCastleRight: false
                         });
                     }
-                // for all other cases, set castleRight to false
-                } else {
+                // If only 1 piece, but not a rook, or if the rook has moved, castleRight: false
+                } else if (piecesRight.length === 1 && board.layout[piecesRight[0]].name !== "rook"
+                || player1.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)) {
                     this.setState({
-                        playerOne: {
-                            ...this.state.playerOne,
-                            castleRight: false
-                        }
+                        oneCastleRight: false
+                    });
+                }
+            
+                // Left
+                // Check if more than just 1 piece to the left, or if none. If so, can't castle left
+                if (piecesLeft.length > 1 || piecesLeft.length === 0) {
+                    this.setState({
+                        oneCastleLeft: false
+                    });
+                // otherwise, if only 1 has a piece and it's a rook and it hasn't moved, keep going
+                } else if (piecesLeft.length === 1 && board.layout[piecesLeft[0]].name === "rook"
+                    && !player1.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)) {
+                    // check if any of the indicesLeft are in danger, except for the rook, if so can't castle
+                    for (let i = 1; i < indicesLeft.length; i++) {
+                        if (player2.dangerIndices.includes(indicesLeft[i])) inDangerLeft = true;
+                    }
+                    // if none are in danger, player1 can castle left
+                    if (!inDangerLeft) {
+                        this.setState({
+                            oneCastleLeft: true
+                        });
+                    } else if (inDangerLeft) {
+                        this.setState({
+                            oneCastleLeft: false
+                        });
+                    }
+                // If only 1 piece, but not a rook, or if the rook has moved: false
+                } else if (piecesLeft.length === 1 && board.layout[piecesLeft[0]].name !== "rook"
+                || player1.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)) {
+                    this.setState({
+                        oneCastleLeft: false
                     });
                 }
             }
         }
-        
-        
+
+
 
 
 
@@ -146,6 +154,17 @@ class Game extends Component {
         const { player1, player2, board } = this.props;
         // get the user in check, or false to pass to <InCheckDisplay />
         let userInCheck = isInCheck(player1, player2);
+        let castlePackage = {
+            playerOne: {
+                castleRight: this.state.oneCastleRight,
+                castleLeft: this.state.oneCastleLeft
+            }, 
+            playerTwo: {
+                castleRight: this.state.twoCastleRight,
+                castleLeft: this.state.twoCastleLeft
+            }
+        }
+        console.log("package:", castlePackage);
 
         return (
             <div className='game'>
