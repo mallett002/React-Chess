@@ -8,6 +8,9 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
     let pieceIndices = [];
     let castleIndices = [];
 
+    console.log("playerOneCastle:", playerOneCastle);
+    console.log("playerTwoCastle:", playerTwoCastle);
+
     board.forEach((box, i) => {
         // x, y of selectedPiece
         let fromCoords = makeCoords(selectedPiece.index);
@@ -68,31 +71,25 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
     if (indicesRight.length === 1 && board[indicesRight[0]].name === "rook") {
         // If it's player1 and can castle right, update that index in validIndices
         if (selectedPiece.piece.team === "player1" && playerOneCastle !== null) {
-                setTimeout(() => {
-                    if (playerOneCastle.canCastleRight) {
-                        console.log("validI:", validIndices);
-                        validIndices = [...validIndices, selectedPiece.index + 2];
-                        console.log("validI after:", validIndices);
-                    }
-                }, 1)
+            if (playerOneCastle.castleRight) {
+                validIndices = [...validIndices, selectedPiece.index + 2];
+            }
         // If it's player2 and can castle right, update that index in validIndices
         } else if (selectedPiece.piece.team === "player2" && playerTwoCastle !== null) {
-            setTimeout(() => {
-                if (playerTwoCastle.canCastleRight) {
-                    validIndices = [...validIndices, selectedPiece.index + 2]; 
-                }
-            }, 1) 
+            if (playerTwoCastle.castleRight) {
+                validIndices = [...validIndices, selectedPiece.index + 2];
+            }
         }
     }
     // Looking Left. If only a rook there
     if (indicesLeft.length === 1 && board[indicesLeft[0]].name === "rook") {
-         // If it's player1 and can castle left, update that index in validIndices
+        // If it's player1 and can castle left, update that index in validIndices
         if (selectedPiece.piece.team === "player1" && playerOneCastle !== null) {
-            if (playerOneCastle.canCastleLeft) {
+            if (playerOneCastle.castleLeft) {
                 validIndices = [...validIndices, selectedPiece.index - 3];
-            } 
+            }
         } else if (selectedPiece.piece.team === "player2" && playerTwoCastle !== null) {
-            if (playerTwoCastle.canCastleLeft) {
+            if (playerTwoCastle.castleLeft) {
                 validIndices = [...validIndices, selectedPiece.index - 3];
             }
         }

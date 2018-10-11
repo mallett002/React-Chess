@@ -28,10 +28,13 @@ class Board extends Component {
     }
 
     componentDidUpdate() {
-        const { board, player1, player2, showMove, playerOneCastle, playerTwoCastle } = this.props;
+        const { board, player1, player2, showMove, castlePackage } = this.props;
         let items = board.layout;
         let playerOneDanger = player1.dangerIndices;
         let playerTwoDanger = player2.dangerIndices;
+        console.log("castlePackage:", castlePackage);
+        let playerOneCastle = castlePackage.playerOne;
+        let playerTwoCastle = castlePackage.playerTwo;
 
         // If there is a selected piece
         if (board.selected !== null) {
