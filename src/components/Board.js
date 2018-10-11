@@ -32,7 +32,6 @@ class Board extends Component {
         let items = board.layout;
         let playerOneDanger = player1.dangerIndices;
         let playerTwoDanger = player2.dangerIndices;
-        console.log("castlePackage:", castlePackage);
         let playerOneCastle = castlePackage.playerOne;
         let playerTwoCastle = castlePackage.playerTwo;
 
@@ -128,7 +127,7 @@ class Board extends Component {
     }
 
     render() {
-        const { board, player1, player2 } = this.props;
+        const { board, player1, player2, castlePackage } = this.props;
 
         return (
             <div id='board'>{
@@ -137,6 +136,7 @@ class Board extends Component {
                         key={i} piece={p} index={i}
                         board={board} handleMove={this.handleMove}
                         player1={player1} player2={player2} canCastle={this.canCastle}
+                        castlePackage={castlePackage}
                     />
                 })
             }</div>

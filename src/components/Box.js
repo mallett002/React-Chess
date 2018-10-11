@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
 import { isLight } from '../constants/constants';
-import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, } from '../actions/actions';
+import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, performCastle } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -27,7 +27,7 @@ class Box extends Component {
     // board is the Redux store for the board
     const { piece, coords, index,
       board, selectPiece, deselect, handleMove, addToFallen,
-      updatePlayerOneDanger, updatePlayerTwoDanger } = this.props;
+      updatePlayerOneDanger, updatePlayerTwoDanger, castlePackage, performCastle } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -52,8 +52,30 @@ class Box extends Component {
     // If a piece is selected, & if clicked box is different than the selected one, and if is a valid move for that piece
     if (board.selected !== null && index !== board.selected.index && board.validMoves.includes(index)) {
 
-      // If new index has a piece, and it's on the other team, add that to the fallen list
-      if (piece.name !== "empty" && piece.team !== board.selected.piece.team) {
+      // Handle a castle
+      // If selected piece is a king, and you can castle, and index is more than 1 away from king's index
+      if (board.selected.piece.name === "king" && Math.abs(board.selected.index - index) === 2
+        || board.selected.piece.name === "king" && Math.abs(board.selected.index - index) === 3) {
+        let oldRookIndex;
+        let newRookIndex;
+        // performCastle(oldKingIndex, newKingIndex, oldRookIndex, newRookIndex)
+        // if new index is greater than kings, castle right
+        if (index > board.selected.index) {
+          oldRookIndex = index + 1;
+          newRookIndex = index - 1;
+          performCastle(board.selected.index, index, oldRookIndex, newRookIndex);
+        // else, castling left
+        } else {
+          oldRookIndex = index - 1;
+          newRookIndex = index + 1;
+          performCastle(board.selected.index, index, oldRookIndex, newRookIndex);
+        }
+        
+        //
+      }
+
+      // otherwise if new index has a piece, and it's on the other team, add that to the fallen list
+      else if (piece.name !== "empty" && piece.team !== board.selected.piece.team) {
         let team = board.selected.piece.team;
         let selected = board.selected;
         addToFallen(piece);
@@ -61,14 +83,16 @@ class Box extends Component {
         handleMove(board.selected.index, index);
       }
 
-      // if new index doesn't have a piece, just send it to that empty spot
-      if (piece.name === "empty") {
+      // otherwise if new index doesn't have a piece, just send it to that empty spot
+      else if (piece.name === "empty") {
         let team = board.selected.piece.team;
         let selected = board.selected;
 
         // move the piece
         handleMove(board.selected.index, index);
       }
+
+
     }
   };
 
@@ -109,5 +133,5 @@ Box.propTypes = {
 };
 
 export default connect(null, {
-  selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger,
+  selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, performCastle
 })(Box);

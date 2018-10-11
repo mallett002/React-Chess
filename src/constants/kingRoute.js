@@ -8,9 +8,6 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
     let pieceIndices = [];
     let castleIndices = [];
 
-    console.log("playerOneCastle:", playerOneCastle);
-    console.log("playerTwoCastle:", playerTwoCastle);
-
     board.forEach((box, i) => {
         // x, y of selectedPiece
         let fromCoords = makeCoords(selectedPiece.index);
@@ -109,6 +106,6 @@ Criteria to be met:
 Need to do:
     -[CHECK]keep track if the king and rook haven't moved (playerOneReducer). Once one has moved, put true
     -[CHECK]update validIndices of king to show castle space (one more square to right or left)
-    - highlight the castle squares only if can castle
+    -[CHECK]highlight the castle squares only if can castle
     - if king moves to that castling square, move the 2 pieces at same time
 */
