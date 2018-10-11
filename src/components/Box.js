@@ -38,7 +38,8 @@ class Box extends Component {
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
       selectPiece(piece, index);
-      this.props.canCastle();
+      // If a king is selected, check if it can castle
+      if (piece.name === "king") this.props.canCastle(piece, index);
     }
 
     // If selected box is clicked again, deselect it
