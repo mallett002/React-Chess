@@ -19,7 +19,8 @@ const initialState = {
     dangerIndices: [],
     inCheck: false,
     isTurn: false,
-    rookOrKingMoved: []
+    rookOrKingMoved: [],
+    almostInCheckPath: []
 };
 
 const playerTwoReducer = (state = initialState, action) => {
