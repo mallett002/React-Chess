@@ -12,7 +12,8 @@ export const REMOVE_1_FROM_CHECK = 'REMOVE_1_FROM_CHECK';
 export const REMOVE_2_FROM_CHECK = 'REMOVE_2_FROM_CHECK';
 export const P1_MOVED_ROOK_OR_KING = 'P1_MOVED_ROOK_OR_KING';
 export const P2_MOVED_ROOK_OR_KING = 'P2_MOVED_ROOK_OR_KING';
-export const PERFORM_CASTLE = 'PERFORM_CASTLE'
+export const PERFORM_CASTLE = 'PERFORM_CASTLE';
+export const PIECES_OUT_OF_CHECK = 'PIECES_OUT_OF_CHECK';
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -91,7 +92,7 @@ export const p2MovedRookOrKing = id => ({
     payload: id
 });
 
-//Perform a castle
+// Perform a castle
 export const performCastle = (oldKingIndex, newKingIndex, oldRookIndex, newRookIndex) => ({
     type: PERFORM_CASTLE,
     payload: {
@@ -100,4 +101,10 @@ export const performCastle = (oldKingIndex, newKingIndex, oldRookIndex, newRookI
         oldRookIndex: oldRookIndex,
         newRookIndex: newRookIndex
     }
+});
+
+// Pieces that can take out of check
+export const upDateOutOfCheck = array => ({
+    type: PIECES_OUT_OF_CHECK,
+    payload: array
 });

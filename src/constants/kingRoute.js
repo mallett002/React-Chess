@@ -94,18 +94,3 @@ export const kingRoutes = (selectedPiece, board, stateSelected, playerOneDanger,
 
     return validIndices;
 }
-
-/* Casteling Notes 
-
-Criteria to be met:
-    -King and rook haven't moved yet. 
-    -King isn't in check.
-    -No pieces between king and rook
-    -Doesn't cross over or end up on an index in check
-
-Need to do:
-    -[CHECK]keep track if the king and rook haven't moved (playerOneReducer). Once one has moved, put true
-    -[CHECK]update validIndices of king to show castle space (one more square to right or left)
-    -[CHECK]highlight the castle squares only if can castle
-    - if king moves to that castling square, move the 2 pieces at same time
-*/

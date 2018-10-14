@@ -1,4 +1,4 @@
-import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE } from '../actions/actions';
+import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE, PIECES_OUT_OF_CHECK } from '../actions/actions';
 
 let initialState = {
   layout: [
@@ -20,6 +20,7 @@ let initialState = {
   ],
   selected: null, // or something like: {piece: {name:"bishop", team:"player1", id:58}, index: 55}
   validMoves: [],
+  piecesOutOfCheck: []
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -48,7 +49,8 @@ const boardReducer = (state = initialState, action) => {
                 // set index of "from" to be an "empty" one
                 ...state.layout[action.payload.from] = {name:"empty"},
                 selected: null,
-                validMoves: []
+                validMoves: [],
+                piecesOutOfCheck: []
             }
         case PERFORM_CASTLE:
             return {
@@ -60,7 +62,13 @@ const boardReducer = (state = initialState, action) => {
                 ...state.layout[action.payload.newRookIndex] = state.layout[action.payload.oldRookIndex],
                 ...state.layout[action.payload.oldRookIndex] = { name: "empty" },
                 selected: null,
-                validMoves: []
+                validMoves: [],
+                piecesOutOfCheck: []
+            }
+        case PIECES_OUT_OF_CHECK:
+            return {
+                ...state,
+                piecesOutOfCheck: action.payload
             }
         default:
             return state
