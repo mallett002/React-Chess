@@ -70,8 +70,6 @@ class Box extends Component {
           newRookIndex = index + 1;
           performCastle(board.selected.index, index, oldRookIndex, newRookIndex);
         }
-        
-        //
       }
 
       // otherwise if new index has a piece, and it's on the other team, add that to the fallen list

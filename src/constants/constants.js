@@ -65,10 +65,10 @@ export const makeCoords = index => {
 // getValidMoves returns array of indices that the piece can move to
 // board is state.board.layout
 // selectedPiece: state.board.selected
-export const getValidMoves = (selectedPiece, board, stateSelected, 
+export const getValidMoves = (selectedPiece, board, stateSelected,
     playerOneDanger = [], playerTwoDanger = [], playerOneCastle = null, playerTwoCastle = null) => {
 
-    const piece = selectedPiece.piece.name; 
+    const piece = selectedPiece.piece.name;
 
     // Call corresponding function based on type of piece
     if (piece === "rook") return rookRoutes(selectedPiece, board, stateSelected);
@@ -96,3 +96,66 @@ export const isInCheck = (player1, player2) => {
     else if (player2.inCheck) return player2.userName;
     else return false;
 };
+
+// Get's the pieces path of danger to the opposing king
+export const getPath = (kingIndex, attackerIndex, dangerIndices, sourceName) => {
+    let path = [];
+    let kingCoords = makeCoords(kingIndex);
+    let attackerCoords = makeCoords(attackerIndex);
+    // Knight doesn't have a path, bc it jumps
+    if (sourceName === "knight") {
+        return path;
+        // All other pieces have a path
+    } else {
+        // If king is same column as attacker
+        if (kingCoords[0] === attackerCoords[0]) {
+            // Loop over dangerIndices
+            for (let index of dangerIndices) {
+                // only get dangerIndices in same column as king
+                if (makeCoords(index)[0] === kingCoords[0]) {
+                    // If king is below the attacker
+                    if (index < kingIndex && index > attackerIndex) path.push(index);
+                    // otherwise it's above
+                    else if (index > kingIndex && index < attackerIndex) path.push(index);
+                }
+            }
+            // If king is in same row as the attacker
+        } else if (kingCoords[1] === attackerCoords[1]) {
+            // Loop over dangerIndices
+            for (let index of dangerIndices) {
+                // Only get dangerIndices in same row as king
+                if (makeCoords(index)[1] === kingCoords[1]) {
+                    // If attacker is to the right of the king
+                    if (index > kingIndex && index < attackerIndex) path.push(index);
+                    // to the left of the king
+                    else if (index < kingIndex && index > attackerIndex) path.push(index);
+                }
+            }
+            // If king is in same diagonal up to the right as the attacker
+        } else if (Math.abs(kingIndex - attackerIndex) % 7 === 0) {
+            // Loop over dangerIndices
+            for (let index of dangerIndices) {
+                // Only get dangerIndices in same diagonal as the king
+                if (Math.abs(index - kingIndex) % 7 === 0) {
+                    // If attacker is up to the right of the king
+                    if (index < kingIndex && index > attackerIndex) path.push(index);
+                    // If the attacker is down to the left of the king
+                    else if (index > kingIndex && index < attackerIndex) path.push(index);
+                }
+            }
+            // If king is in same diagonal down to the right as the attacker
+        } else if (Math.abs(kingIndex - attackerIndex) % 9 === 0) {
+            // Loop over dangerIndices
+            for (let index of dangerIndices) {
+                // Get only dangerIndices in same diagonal as the king
+                if (Math.abs(index - kingIndex) % 9 === 0) {
+                    // If attacker up to the left of the king
+                    if (index < kingIndex && index > attackerIndex) path.push(index);
+                    // If attacker down to the right of the king 
+                    else if (index > kingIndex && index < attackerIndex) path.push(index);
+                }
+            }
+        }
+    }
+    return path;
+}

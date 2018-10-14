@@ -14,9 +14,10 @@ import {
     removeTwoFromCheck,
     p1MovedRookOrKing,
     p2MovedRookOrKing,
-    selectPiece
+    selectPiece,
+    upDateOutOfCheck
 } from '../actions/actions';
-import { isLight, makeCoords, getValidMoves, onlyOneOfEach } from '../constants/constants';
+import { isLight, makeCoords, getValidMoves, onlyOneOfEach, getPath } from '../constants/constants';
 
 // Board will have width and height of 8 X 8
 // Will be a set of divs with x, y coordinates
@@ -27,8 +28,8 @@ class Board extends Component {
         this.canCastle = this.canCastle.bind(this);
     }
 
-    componentDidUpdate() {
-        const { board, player1, player2, showMove, castlePackage } = this.props;
+    componentDidUpdate(prevProps) {
+        const { board, player1, player2, showMove, castlePackage, upDateOutOfCheck } = this.props;
         let items = board.layout;
         let playerOneDanger = player1.dangerIndices;
         let playerTwoDanger = player2.dangerIndices;
@@ -37,17 +38,128 @@ class Board extends Component {
 
         // If there is a selected piece
         if (board.selected !== null) {
-            // get the indices of the valid moves
-            let validIndices = getValidMoves(
-                board.selected, board.layout, board.selected, 
-                playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
-            );
-            // Update the state.validMoves with the indices. 
-            // Only do it if it's empty, and there are valid moves to make
-            if (board.validMoves.length === 0 && validIndices.length !== 0) {
-                showMove(validIndices);
+            let team = board.selected.piece.team;
+            let sourceName;
+            let sourceIndex;
+            let pathOfDanger;
+            let kingIndex;
+            let validOutOfCheck = [];
+
+            // If in check, only show moves out of check 
+            // Player1 if in check--------------------------------------------------------------------------------------
+            if (team === "player1" && player1.inCheck) {
+
+                // get the king's index:
+                board.layout.forEach((item, index) => {
+                    if (item.name === "king" && item.team === "player1") kingIndex = index;
+                });
+
+                // Loop over board, look at dangerIndices of player2
+                board.layout.forEach((item, index) => {
+                    // get dangerIndices for player2
+                    if (item.name !== "empty" && item.team === "player2") {
+                        // Get the dangerIndices for the current piece
+                        let dangerIndices = getValidMoves({
+                            piece: item,
+                            index: index
+                        }, board.layout, null);
+
+                        // Info about the source of check
+                        if (dangerIndices.includes(kingIndex)) {
+                            sourceName = board.layout[index].name;
+                            sourceIndex = index;
+                            pathOfDanger = getPath(kingIndex, index, dangerIndices, sourceName);
+                        };
+                    }
+                });
+
+                // Filter selected pieces validIndices to show only moves out of check
+                let validIndices = getValidMoves(
+                    board.selected, board.layout, board.selected,
+                    playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
+                );
+
+                // If it's not a king
+                if (board.selected.piece.name !== "king") {
+                    // get only validIndices that are in pathOfDanger or the source
+                    for (let i of validIndices) {
+                        if (pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                    }
+                } else {
+                    // Otherwise it's a king. Get only validIndices out of pathOfDanger, or into the source
+                    for (let i of validIndices) {
+                        if (!pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                    }
+                }
+
+                // Update state.validMoves with validOutOfCheck indices
+                if (board.validMoves.length === 0 && validOutOfCheck.length !== 0) showMove(validOutOfCheck);
+
+
+                // If player2 selected and in check-----------------------------------------------------------------
+            } else if (team === "player2" && player2.inCheck) {
+                // get the king's index:
+                board.layout.forEach((item, index) => {
+                    if (item.name === "king" && item.team === "player2") kingIndex = index;
+                });
+
+                // Loop over board, look at dangerIndices of player1
+                board.layout.forEach((item, index) => {
+                    // get dangerIndices for player1
+                    if (item.name !== "empty" && item.team === "player1") {
+                        // Get the dangerIndices for the current piece
+                        let dangerIndices = getValidMoves({
+                            piece: item,
+                            index: index
+                        }, board.layout, null);
+
+                        // Info about the source of check
+                        if (dangerIndices.includes(kingIndex)) {
+                            sourceName = board.layout[index].name;
+                            sourceIndex = index;
+                            pathOfDanger = getPath(kingIndex, index, dangerIndices, sourceName);
+                        };
+                    }
+                });
+
+                // Filter selected pieces validIndices to show only moves out of check
+                let validIndices = getValidMoves(
+                    board.selected, board.layout, board.selected,
+                    playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
+                );
+
+                // If it's not a king
+                if (board.selected.piece.name !== "king") {
+                    // get only validIndices that are in pathOfDanger or the source
+                    for (let i of validIndices) {
+                        if (pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                    }
+                } else {
+                    // Otherwise it's a king. Get only validIndices out of pathOfDanger, or into the source
+                    for (let i of validIndices) {
+                        if (!pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                    }
+                }
+
+                // Update state.validMoves with validOutOfCheck indices
+                if (board.validMoves.length === 0 && validOutOfCheck.length !== 0) showMove(validOutOfCheck);
+
+
+                // Otherwise, not in check, just show normal moves-------------------------------------------------------
+            } else {
+                // get the indices of the valid moves
+                let validIndices = getValidMoves(
+                    board.selected, board.layout, board.selected,
+                    playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
+                );
+                // Update the state.validMoves with the indices. 
+                // Only do it if it's empty, and there are valid moves to make
+                if (board.validMoves.length === 0 && validIndices.length !== 0) {
+                    showMove(validIndices);
+                }
             }
         }
+        console.log("store's piecesOutOfCheck", board.piecesOutOfCheck)
     }
 
     canCastle(selectedPiece, index) {
@@ -160,6 +272,7 @@ export default connect(null, {
     removeOneFromCheck,
     removeTwoFromCheck,
     p1MovedRookOrKing,
-    p2MovedRookOrKing
+    p2MovedRookOrKing,
+    upDateOutOfCheck
 }
 )(Board);
