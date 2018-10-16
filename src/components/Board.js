@@ -235,8 +235,9 @@ class Board extends Component {
                 }
             }
         });
-        updatePlayerOneAlmostInCheck(p1PreventCheckPath);
-        updatePlayerTwoAlmostInCheck(p2PreventCheckPath);
+        // update store's almostInCheck only if it changes
+        if (p1PreventCheckPath !== player1.almostInCheckPath) updatePlayerOneAlmostInCheck(p1PreventCheckPath);
+        if (p2PreventCheckPath !== player2.almostInCheckPath) updatePlayerTwoAlmostInCheck(p2PreventCheckPath);
     }
 
 
