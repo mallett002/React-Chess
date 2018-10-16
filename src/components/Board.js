@@ -339,6 +339,9 @@ class Board extends Component {
 
         // check if any pieces are preventing a king from being in check
         this.updateAlmostInCheck();
+
+        // check if a pawn has made it to the end of the board
+        this.props.canPromotePawn();
     }
 
     render() {

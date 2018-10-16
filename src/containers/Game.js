@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Board from '../components/Board';
 import FallenSoldiers from '../components/FallenSoldiers';
 import InCheckDisplay from '../components/InCheckDisplay';
+import SelectPromotion from '../components/SelectPromotion';
 // Constants:
 import { isInCheck, makeCoords } from '../constants/constants';
 
@@ -18,10 +19,48 @@ class Game extends Component {
             oneCastleRight: false,
             oneCastleLeft: false,
             twoCastleRight: false,
-            twoCastleLeft: false
+            twoCastleLeft: false,
+            canPromotePawn: false,
+            promoteAt: null,
+            promotionUser: null
         };
 
         this.canCastle = this.canCastle.bind(this);
+        this.canPromotePawn = this.canPromotePawn.bind(this);
+    }
+
+    // After a move, check if a pawn has made it to end of the board
+    // If so, have a modal pop up to select either a queen, rook, bishop or knight
+    // Turn that pawn into the selected piece
+    canPromotePawn() {
+        const { board, player1, player2 } = this.props;
+        let promotionIndex;
+        let user;
+        // look at each index of the board
+        board.layout.forEach((item, index) => {
+            let itemCoords = makeCoords(index);
+            // Only indices in the top row
+            if (itemCoords[1] === 0) {
+                if (item.name === "pawn") {
+                    promotionIndex = index;
+                    user = item.team === "player1" ? player1 : player2
+                }
+                // Only indices in the bottom row
+            } else if (itemCoords[1] === 7) {
+                if (item.name === "pawn") {
+                    promotionIndex = index;
+                    user = item.team === "player1" ? player1 : player2
+                }
+            }
+        });
+        
+        if (promotionIndex !== undefined) {
+            this.setState({
+                canPromotePawn: true,
+                promoteAt: promotionIndex,
+                promotionUser: user
+            });
+        }
     }
 
     // Look at board and see if given player can castle
@@ -232,6 +271,8 @@ class Game extends Component {
 
     render() {
         const { player1, player2, board } = this.props;
+        const { canPromotePawn, promoteAt, promotionUser } = this.state;
+
         // get the user in check, or false to pass to <InCheckDisplay />
         let userInCheck = isInCheck(player1, player2);
         let castlePackage = {
@@ -253,10 +294,12 @@ class Game extends Component {
                     {userInCheck && <InCheckDisplay user={userInCheck} />}
                 </div>
 
+                {canPromotePawn && <SelectPromotion promoteAt={promoteAt} canPromotePawn={this.canPromotePawn} user={promotionUser} />}
+
                 <Board
                     player1={player1} player2={player2}
                     board={board} canCastle={this.canCastle}
-                    castlePackage={castlePackage}
+                    castlePackage={castlePackage} canPromotePawn={this.canPromotePawn}
                 />
 
                 <div className='fallen-container'>
