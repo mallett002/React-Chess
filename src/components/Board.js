@@ -15,19 +15,21 @@ import {
     p1MovedRookOrKing,
     p2MovedRookOrKing,
     selectPiece,
-    upDateOutOfCheck
+    upDateOutOfCheck,
+    updatePlayerOneAlmostInCheck,
+    updatePlayerTwoAlmostInCheck
 } from '../actions/actions';
-import { isLight, makeCoords, getValidMoves, onlyOneOfEach, getPath } from '../constants/constants';
+import { isLight, makeCoords, getValidMoves, onlyOneOfEach, getPath, getPreventCheckPath } from '../constants/constants';
 
 // Board will have width and height of 8 X 8
 // Will be a set of divs with x, y coordinates
 class Board extends Component {
     constructor(props) {
         super(props);
-        
         this.handleMove = this.handleMove.bind(this);
         this.canCastle = this.canCastle.bind(this);
         this.updateDanger = this.updateDanger.bind(this);
+        this.updateAlmostInCheck = this.updateAlmostInCheck.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -152,16 +154,9 @@ class Board extends Component {
                 // player1's piece, and not in check
                 if (team === "player1" && !player1.inCheck) {
                     let selectedIndex = board.selected.index;
-                    // pathOfDanger is p2's dangerIndices that includes a king
                     // If selectedPiece is only piece in between attacker and the king, don't let it move
-
-                    // Look at p2's paths of danger. (could be check if player 1 moves out of path)
-                            // Get the piece's path without stopping if meets a piece of opposite team 
-                            // Stops at the opposing king, and counts pieces in between. If only has 1, it's a pathOfDanger.
-                            // Just rooks, bishops, and queens
-
-                    // if selectedPiece's index is in player2.almostInCheckPath
-                    // if (player2.almostInCheckPath.indlcudes(selectedPiece.index))
+                    // if selectedPiece's index is in player2.almostInCheckPath, only show moves still in the path
+                    if (player2.almostInCheckPath.includes(selectedIndex)) console.log("No moves! Prevent Check!");
                 }
                 // Otherwise, player 2's piece and not in check 
                 else if (team === "player2" && !player2.inCheck) {
@@ -213,6 +208,37 @@ class Board extends Component {
     canCastle(selectedPiece, index) {
         this.props.canCastle(selectedPiece, index);
     }
+
+    // Searches board and checks if any pieces are preventing a king from being in check
+    updateAlmostInCheck() {
+        const { board, player1, player2, updatePlayerOneAlmostInCheck, updatePlayerTwoAlmostInCheck } = this.props;
+        let p1PreventCheckPath = [];
+        let p2PreventCheckPath = [];
+        // Look at p2's paths of danger. (could be check if player 1 moves out of path)
+        // Get the piece's path without stopping if meets a piece of opposite team 
+        // Stops at the opposing king, and counts pieces in between. If only has 1, it's a preventCheckPath.
+        // Just rooks, bishops, and queens
+        board.layout.forEach((item, index) => {
+            if (item.name !== "empty" && item.team === "player1") {
+                // Only look at the pieces with longer paths
+                if (item.name === "rook" || item.name === "queen" || item.name === "bishop") {
+                    // get this piece's path, if has any preventCheckPaths
+                    let piecePath = getPreventCheckPath(board.layout, item, index);
+                    if (piecePath.length > 0) p1PreventCheckPath = p1PreventCheckPath.concat(piecePath);
+                }
+            } else if (item.name !== "empty" && item.team === "player2") {
+                // Only look at the pieces with longer paths
+                if (item.name === "rook" || item.name === "queen" || item.name === "bishop") {
+                    // get this piece's path, if has any preventCheckPaths
+                    let piecePath = getPreventCheckPath(board.layout, item, index);
+                    if (piecePath.length > 0) p2PreventCheckPath = p2PreventCheckPath.concat(piecePath);
+                }
+            }
+        });
+        updatePlayerOneAlmostInCheck(p1PreventCheckPath);
+        updatePlayerTwoAlmostInCheck(p2PreventCheckPath);
+    }
+
 
     // Dispatches actions to handle the move
     handleMove(from, to) {
@@ -284,6 +310,9 @@ class Board extends Component {
                 }
             }
         });
+
+        // check if any pieces are preventing a king from being in check
+        this.updateAlmostInCheck();
     }
 
     render() {
@@ -297,6 +326,7 @@ class Board extends Component {
                         board={board} handleMove={this.handleMove}
                         player1={player1} player2={player2} canCastle={this.canCastle}
                         castlePackage={castlePackage} updateDanger={this.updateDanger}
+                        updateAlmostInCheck={this.updateAlmostInCheck}
                     />
                 })
             }</div>
@@ -321,6 +351,8 @@ export default connect(null, {
     removeTwoFromCheck,
     p1MovedRookOrKing,
     p2MovedRookOrKing,
-    upDateOutOfCheck
+    upDateOutOfCheck,
+    updatePlayerOneAlmostInCheck,
+    updatePlayerTwoAlmostInCheck
 }
 )(Board);

@@ -159,3 +159,187 @@ export const getPath = (kingIndex, attackerIndex, dangerIndices, sourceName) => 
     }
     return path;
 }
+
+// Returns an array of indices where only 1 piece is preventing check
+export const getPreventCheckPath = (layout, piece, pieceIndex) => {
+    let preventCheckPath = [];
+    let pieceCoords = makeCoords(pieceIndex);
+    let kingIndex;
+    let pathWithKing = [];
+    let foundKing = false;
+    let numberOfPieces = 0;
+
+    // If piece is a rook, check horizontal and perpendicular
+    if (piece.name === "rook") {
+        let sameRow = [];
+        let sameColumn = [];
+
+        layout.forEach((item, index) => {
+            let itemCoords = makeCoords(index);
+            // All indices in same row as rook and opposing king is in the row
+            if (pieceCoords[1] === itemCoords[1]) {
+                sameRow.push(index);
+            } else if (pieceCoords[0] === itemCoords[0]) {
+                sameColumn.push(index);
+            }
+        });
+        // If sameRow contains a king
+        for (let i of sameRow) {
+            // look at pieces in sameRow. If contains a king on opposing team of the rook, get the king's index
+            if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                foundKing = true;
+                kingIndex = i;
+                // assign pathWithKing to be this path
+                pathWithKing = sameRow;
+            }
+        }
+        // If not in same row, look in sameColumn
+        if (!foundKing) {
+            for (let i of sameColumn) {
+                if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                    foundKing = true;
+                    kingIndex = i;
+                    // assign pathWithKing to be this path
+                    pathWithKing = sameColumn;
+                }
+            }
+        }
+
+        // else, if it's a bishop, check diagonals
+    } else if (piece.name === "bishop") {
+        let sameDiagPositive = []; // up to the right
+        let sameDiagNegative = []; // up to the left
+
+        layout.forEach((item, index) => {
+            let itemCoords = makeCoords(index);
+            // All indices in same diagonal up to the right as bishop
+            if (Math.abs(pieceIndex - index) % 7 === 0) {
+                sameDiagPositive.push(index);
+            } else if (Math.abs(pieceIndex - index) % 9 === 0) {
+                sameDiagNegative.push(index);
+            }
+        });
+        // If sameDiagPositve contains a king
+        for (let i of sameDiagPositive) {
+            // look at pieces in sameDiagPositive. If contains a king on opposing team of the bishop, get the king's index
+            if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                foundKing = true;
+                kingIndex = i;
+                // assign pathWithKing to be this path
+                pathWithKing = sameDiagPositive;
+            }
+        }
+        // If not in same sameDiagPositive, look in sameDiagNegative
+        if (!foundKing) {
+            for (let i of sameDiagNegative) {
+                if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                    foundKing = true;
+                    kingIndex = i;
+                    // assign pathWithKing to be this path
+                    pathWithKing = sameDiagNegative;
+                }
+            }
+        }
+
+        // else it's a queen, check in all directions
+    } else {
+        let sameRow = [];
+        let sameColumn = [];
+        let sameDiagPositive = []; // up to the right
+        let sameDiagNegative = []; // up to the left
+
+        layout.forEach((item, index) => {
+            let itemCoords = makeCoords(index);
+            // All indices in same diagonal up to the right as bishop
+            if (Math.abs(pieceIndex - index) % 7 === 0) {
+                sameDiagPositive.push(index);
+            } else if (Math.abs(pieceIndex - index) % 9 === 0) {
+                sameDiagNegative.push(index);
+            } else if (pieceCoords[1] === itemCoords[1]) {
+                sameRow.push(index);
+            } else if (pieceCoords[0] === itemCoords[0]) {
+                sameColumn.push(index);
+            }
+        });
+        // If sameDiagPositve contains a king
+        for (let i of sameDiagPositive) {
+            // look at pieces in sameDiagPositive. If contains a king on opposing team of the bishop, get the king's index
+            if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                foundKing = true;
+                kingIndex = i;
+                // assign pathWithKing to be this path
+                pathWithKing = sameDiagPositive;
+            }
+        }
+        // If not in same sameDiagPositive, look in sameDiagNegative
+        if (!foundKing) {
+            for (let i of sameDiagNegative) {
+                if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                    foundKing = true;
+                    kingIndex = i;
+                    // assign pathWithKing to be this path
+                    pathWithKing = sameDiagNegative;
+                }
+            }
+        }
+        // if not in sameDiagNegative, check in sameRow
+        if (!foundKing) {
+            for (let i of sameRow) {
+                // look at pieces in sameRow. If contains a king on opposing team of the rook, get the king's index
+                if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                    foundKing = true;
+                    kingIndex = i;
+                    // assign pathWithKing to be this path
+                    pathWithKing = sameRow;
+                }
+            }
+        }
+        // if not in sameRow, check in sameColumn
+        if (!foundKing) {
+            for (let i of sameColumn) {
+                if (layout[i].name === "king" && layout[i].team !== piece.team) {
+                    foundKing = true;
+                    kingIndex = i;
+                    // assign pathWithKing to be this path
+                    pathWithKing = sameColumn;
+                }
+            }
+        }
+    }
+
+    // If a pathWithKing is found, count # of pieces between piece and king
+    if (pathWithKing.length > 0) {
+
+        // if king is to right or below attacker
+        if (kingIndex > pieceIndex) {
+            pathWithKing = pathWithKing.filter(i => i > pieceIndex && i < kingIndex);
+            for (let i of pathWithKing) {
+                // if empty or opposite team, keep going, else stop
+                if (layout[i].name !== "empty" && layout[i].team !== piece.team) {
+                    numberOfPieces++;
+                    // Otherwise it's on same team, so stop
+                } else if (layout[i].name !== "empty" && layout[i].team === piece.team) {
+                    return [];
+                }
+            }
+            // otherwise king is to the left or above attacker
+        } else {
+            pathWithKing = pathWithKing.filter(i => i > kingIndex && i < pieceIndex);
+            for (let i of pathWithKing) {
+                // if empty or opposite team, keep going, else stop
+                if (layout[i].name !== "empty" && layout[i].team !== piece.team) {
+                    numberOfPieces++;
+                    // Otherwise it's on same team, so stop
+                } else if (layout[i].name !== "empty" && layout[i].team === piece.team) {
+                    return [];
+                }
+            }
+        }
+    }
+
+    if (numberOfPieces === 1) {
+        preventCheckPath = pathWithKing;
+    }
+
+    return preventCheckPath;
+};

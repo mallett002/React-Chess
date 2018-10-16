@@ -4,7 +4,8 @@ import {
     UPDATE_PLAYER_TWO_DANGER,
     P2_IN_CHECK,
     REMOVE_2_FROM_CHECK,
-    P2_MOVED_ROOK_OR_KING
+    P2_MOVED_ROOK_OR_KING,
+    P2_ALMOST_IN_CHECK
 } from '../actions/actions';
 
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
@@ -57,6 +58,11 @@ const playerTwoReducer = (state = initialState, action) => {
                 ...state,
                 rookOrKingMoved: !state.rookOrKingMoved.includes(action.payload) ? [...state.rookOrKingMoved, action.payload]
                     : [...state.rookOrKingMoved]
+            }
+        case P2_ALMOST_IN_CHECK:
+            return {
+                ...state,
+                almostInCheckPath: action.payload
             }
         default:
             return state

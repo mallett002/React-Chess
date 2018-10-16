@@ -66,15 +66,19 @@ class Box extends Component {
           performCastle(board.selected.index, index, oldRookIndex, newRookIndex);
           // Then update store's dangerIndices
           this.props.updateDanger();
+          // And see if any pieces are preventing check
+          this.props.updateAlmostInCheck();
 
-        // else, castling left
+          // else, castling left
         } else {
           oldRookIndex = index - 1;
           newRookIndex = index + 1;
-          
+
           performCastle(board.selected.index, index, oldRookIndex, newRookIndex);
           // Then update store's dangerIndices
           this.props.updateDanger();
+          // And see if any pieces are preventing check
+          this.props.updateAlmostInCheck();
         }
       }
 
