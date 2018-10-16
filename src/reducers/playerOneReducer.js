@@ -4,7 +4,8 @@ import {
     UPDATE_PLAYER_ONE_DANGER, 
     P1_IN_CHECK, 
     REMOVE_1_FROM_CHECK,
-    P1_MOVED_ROOK_OR_KING 
+    P1_MOVED_ROOK_OR_KING,
+    P1_ALMOST_IN_CHECK 
 } from '../actions/actions';
 
 // Want to know which pieces are out to display them in a list of "fallen soldiers"
@@ -19,7 +20,8 @@ const initialState = {
     dangerIndices: [],
     inCheck: false,
     isTurn: false, 
-    rookOrKingMoved: []
+    rookOrKingMoved: [],
+    almostInCheckPath: []
 };
 
 const playerOneReducer = (state = initialState, action) => {
@@ -56,6 +58,11 @@ const playerOneReducer = (state = initialState, action) => {
                 ...state,
                 rookOrKingMoved: !state.rookOrKingMoved.includes(action.payload) ? [...state.rookOrKingMoved, action.payload]
                     : [...state.rookOrKingMoved]
+            }
+        case P1_ALMOST_IN_CHECK: 
+            return {
+                ...state,
+                almostInCheckPath: action.payload
             }
         default:
             return state

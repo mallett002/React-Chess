@@ -15,9 +15,11 @@ import {
     p1MovedRookOrKing,
     p2MovedRookOrKing,
     selectPiece,
-    upDateOutOfCheck
+    upDateOutOfCheck,
+    updatePlayerOneAlmostInCheck,
+    updatePlayerTwoAlmostInCheck
 } from '../actions/actions';
-import { isLight, makeCoords, getValidMoves, onlyOneOfEach, getPath } from '../constants/constants';
+import { isLight, makeCoords, getValidMoves, onlyOneOfEach, getPath, getPreventCheckPath } from '../constants/constants';
 
 // Board will have width and height of 8 X 8
 // Will be a set of divs with x, y coordinates
@@ -26,6 +28,8 @@ class Board extends Component {
         super(props);
         this.handleMove = this.handleMove.bind(this);
         this.canCastle = this.canCastle.bind(this);
+        this.updateDanger = this.updateDanger.bind(this);
+        this.updateAlmostInCheck = this.updateAlmostInCheck.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -41,7 +45,7 @@ class Board extends Component {
             let team = board.selected.piece.team;
             let sourceName;
             let sourceIndex;
-            let pathOfDanger;
+            let pathOfCheck;
             let kingIndex;
             let validOutOfCheck = [];
 
@@ -68,7 +72,7 @@ class Board extends Component {
                         if (dangerIndices.includes(kingIndex)) {
                             sourceName = board.layout[index].name;
                             sourceIndex = index;
-                            pathOfDanger = getPath(kingIndex, index, dangerIndices, sourceName);
+                            pathOfCheck = getPath(kingIndex, index, dangerIndices, sourceName);
                         };
                     }
                 });
@@ -81,14 +85,14 @@ class Board extends Component {
 
                 // If it's not a king
                 if (board.selected.piece.name !== "king") {
-                    // get only validIndices that are in pathOfDanger or the source
+                    // get only validIndices that are in pathOfCheck or the source
                     for (let i of validIndices) {
-                        if (pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                        if (pathOfCheck.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
                     }
                 } else {
-                    // Otherwise it's a king. Get only validIndices out of pathOfDanger, or into the source
+                    // Otherwise it's a king. Get only validIndices out of pathOfCheck, or into the source
                     for (let i of validIndices) {
-                        if (!pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                        if (!pathOfCheck.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
                     }
                 }
 
@@ -117,7 +121,7 @@ class Board extends Component {
                         if (dangerIndices.includes(kingIndex)) {
                             sourceName = board.layout[index].name;
                             sourceIndex = index;
-                            pathOfDanger = getPath(kingIndex, index, dangerIndices, sourceName);
+                            pathOfCheck = getPath(kingIndex, index, dangerIndices, sourceName);
                         };
                     }
                 });
@@ -130,14 +134,14 @@ class Board extends Component {
 
                 // If it's not a king
                 if (board.selected.piece.name !== "king") {
-                    // get only validIndices that are in pathOfDanger or the source
+                    // get only validIndices that are in pathOfCheck or the source
                     for (let i of validIndices) {
-                        if (pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                        if (pathOfCheck.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
                     }
                 } else {
-                    // Otherwise it's a king. Get only validIndices out of pathOfDanger, or into the source
+                    // Otherwise it's a king. Get only validIndices out of pathOfCheck, or into the source
                     for (let i of validIndices) {
-                        if (!pathOfDanger.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
+                        if (!pathOfCheck.includes(i) || i === sourceIndex) validOutOfCheck.push(i);
                     }
                 }
 
@@ -145,8 +149,22 @@ class Board extends Component {
                 if (board.validMoves.length === 0 && validOutOfCheck.length !== 0) showMove(validOutOfCheck);
 
 
-                // Otherwise, not in check, just show normal moves-------------------------------------------------------
+                // Otherwise, not in check, ------------------------------------------------------------------------
             } else {
+                // player1's piece, and not in check
+                if (team === "player1" && !player1.inCheck) {
+                    let selectedIndex = board.selected.index;
+                    // If selectedPiece is only piece in between attacker and the king, don't let it move
+                    // if selectedPiece's index is in player2.almostInCheckPath, only show moves still in the path
+                    if (player2.almostInCheckPath.includes(selectedIndex)) console.log("No moves! Prevent Check!");
+                }
+                // Otherwise, player 2's piece and not in check 
+                else if (team === "player2" && !player2.inCheck) {
+                    console.log("player2, not in check");
+                }
+
+
+
                 // get the indices of the valid moves
                 let validIndices = getValidMoves(
                     board.selected, board.layout, board.selected,
@@ -159,12 +177,69 @@ class Board extends Component {
                 }
             }
         }
-        console.log("store's piecesOutOfCheck", board.piecesOutOfCheck)
+    }
+
+    updateDanger() {
+        const { board, updatePlayerOneDanger, updatePlayerTwoDanger } = this.props;
+        let playerOneDanger = [];
+        let playerTwoDanger = [];
+        // Look at the whole board, get all valid move indices for both teams. Update redux store with them.
+        // Put them in either playerOneDanger or playerTwoDanger
+        board.layout.forEach((item, index) => {
+            if (item.name !== "empty") {
+                // call getValidMoves and push them up into playerOneDanger array.
+                let dangerIndices = getValidMoves({
+                    piece: item,
+                    index: index
+                }, board.layout, null);
+
+                if (item.team === "player1") playerOneDanger = [...playerOneDanger, ...dangerIndices];
+                else playerTwoDanger = [...playerTwoDanger, ...dangerIndices];
+            }
+        });
+        playerOneDanger = [...onlyOneOfEach(playerOneDanger)];
+        playerTwoDanger = [...onlyOneOfEach(playerTwoDanger)];
+
+        // Then update the Redux store with the danger indices for both teams.
+        updatePlayerOneDanger(playerOneDanger);
+        updatePlayerTwoDanger(playerTwoDanger);
     }
 
     canCastle(selectedPiece, index) {
         this.props.canCastle(selectedPiece, index);
     }
+
+    // Searches board and checks if any pieces are preventing a king from being in check
+    updateAlmostInCheck() {
+        const { board, player1, player2, updatePlayerOneAlmostInCheck, updatePlayerTwoAlmostInCheck } = this.props;
+        let p1PreventCheckPath = [];
+        let p2PreventCheckPath = [];
+        // Look at p2's paths of danger. (could be check if player 1 moves out of path)
+        // Get the piece's path without stopping if meets a piece of opposite team 
+        // Stops at the opposing king, and counts pieces in between. If only has 1, it's a preventCheckPath.
+        // Just rooks, bishops, and queens
+        board.layout.forEach((item, index) => {
+            if (item.name !== "empty" && item.team === "player1") {
+                // Only look at the pieces with longer paths
+                if (item.name === "rook" || item.name === "queen" || item.name === "bishop") {
+                    // get this piece's path, if has any preventCheckPaths
+                    let piecePath = getPreventCheckPath(board.layout, item, index);
+                    if (piecePath.length > 0) p1PreventCheckPath = p1PreventCheckPath.concat(piecePath);
+                }
+            } else if (item.name !== "empty" && item.team === "player2") {
+                // Only look at the pieces with longer paths
+                if (item.name === "rook" || item.name === "queen" || item.name === "bishop") {
+                    // get this piece's path, if has any preventCheckPaths
+                    let piecePath = getPreventCheckPath(board.layout, item, index);
+                    if (piecePath.length > 0) p2PreventCheckPath = p2PreventCheckPath.concat(piecePath);
+                }
+            }
+        });
+        // update store's almostInCheck only if it changes
+        if (p1PreventCheckPath !== player1.almostInCheckPath) updatePlayerOneAlmostInCheck(p1PreventCheckPath);
+        if (p2PreventCheckPath !== player2.almostInCheckPath) updatePlayerTwoAlmostInCheck(p2PreventCheckPath);
+    }
+
 
     // Dispatches actions to handle the move
     handleMove(from, to) {
@@ -236,6 +311,9 @@ class Board extends Component {
                 }
             }
         });
+
+        // check if any pieces are preventing a king from being in check
+        this.updateAlmostInCheck();
     }
 
     render() {
@@ -248,7 +326,8 @@ class Board extends Component {
                         key={i} piece={p} index={i}
                         board={board} handleMove={this.handleMove}
                         player1={player1} player2={player2} canCastle={this.canCastle}
-                        castlePackage={castlePackage}
+                        castlePackage={castlePackage} updateDanger={this.updateDanger}
+                        updateAlmostInCheck={this.updateAlmostInCheck}
                     />
                 })
             }</div>
@@ -273,6 +352,8 @@ export default connect(null, {
     removeTwoFromCheck,
     p1MovedRookOrKing,
     p2MovedRookOrKing,
-    upDateOutOfCheck
+    upDateOutOfCheck,
+    updatePlayerOneAlmostInCheck,
+    updatePlayerTwoAlmostInCheck
 }
 )(Board);

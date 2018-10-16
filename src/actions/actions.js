@@ -14,6 +14,9 @@ export const P1_MOVED_ROOK_OR_KING = 'P1_MOVED_ROOK_OR_KING';
 export const P2_MOVED_ROOK_OR_KING = 'P2_MOVED_ROOK_OR_KING';
 export const PERFORM_CASTLE = 'PERFORM_CASTLE';
 export const PIECES_OUT_OF_CHECK = 'PIECES_OUT_OF_CHECK';
+export const P1_ALMOST_IN_CHECK = 'P1_ALMOST_IN_CHECK';
+export const P2_ALMOST_IN_CHECK = 'P2_ALMOST_IN_CHECK';
+
 
 // When a piece is selected
 export const selectPiece = (piece, place) => ({
@@ -106,5 +109,18 @@ export const performCastle = (oldKingIndex, newKingIndex, oldRookIndex, newRookI
 // Pieces that can take out of check
 export const upDateOutOfCheck = array => ({
     type: PIECES_OUT_OF_CHECK,
+    payload: array
+});
+
+// Update player one's almost in check path ("only 1 piece preventing check").
+// Have this so you can't move this piece and put yourself in check.
+export const updatePlayerOneAlmostInCheck = array => ({
+    type: P1_ALMOST_IN_CHECK,
+    payload: array
+});
+
+// Update player two's almost in check path
+export const updatePlayerTwoAlmostInCheck = array => ({
+    type: P2_ALMOST_IN_CHECK,
     payload: array
 });
