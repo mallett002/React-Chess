@@ -154,29 +154,54 @@ class Board extends Component {
                 // player1's piece, and not in check
                 if (team === "player1" && !player1.inCheck) {
                     let selectedIndex = board.selected.index;
-                    // If selectedPiece is only piece in between attacker and the king, don't let it move
+                    // get the indices of the valid moves
+                    let validIndices = getValidMoves(
+                        board.selected, board.layout, board.selected,
+                        playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
+                    );
+                    // If selectedPiece is only piece in between attacker and the king
                     // if selectedPiece's index is in player2.almostInCheckPath, only show moves still in the path
-                    if (player2.almostInCheckPath.includes(selectedIndex)) console.log("No moves! Prevent Check!");
+                    if (player2.almostInCheckPath.includes(selectedIndex)) {
+                        // Filter validIndices to show only moves inside of player2.almostInCheckPath as to not put in check
+                        validIndices = validIndices.filter(i => player2.almostInCheckPath.includes(i));
+                        // Update the state.validMoves with the indices. 
+                        if (board.validMoves.length === 0 && validIndices.length !== 0) {
+                            showMove(validIndices);
+                        }
+                        // Otherwise, just show normal moves
+                    } else {
+                        // Update the state.validMoves with the indices. 
+                        if (board.validMoves.length === 0 && validIndices.length !== 0) {
+                            showMove(validIndices);
+                        }
+                    }
                 }
                 // Otherwise, player 2's piece and not in check 
                 else if (team === "player2" && !player2.inCheck) {
-                    console.log("player2, not in check");
-                }
-
-
-
-                // get the indices of the valid moves
-                let validIndices = getValidMoves(
-                    board.selected, board.layout, board.selected,
-                    playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
-                );
-                // Update the state.validMoves with the indices. 
-                // Only do it if it's empty, and there are valid moves to make
-                if (board.validMoves.length === 0 && validIndices.length !== 0) {
-                    showMove(validIndices);
+                    let selectedIndex = board.selected.index;
+                    // get the indices of the valid moves
+                    let validIndices = getValidMoves(
+                        board.selected, board.layout, board.selected,
+                        playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle
+                    );
+                    // If selectedPiece is only piece in between attacker and the king
+                    // Only show moves still in the path
+                    if (player1.almostInCheckPath.includes(selectedIndex)) {
+                        // Filter validIndices to show only moves still in the path
+                        validIndices = validIndices.filter(i => player1.almostInCheckPath.includes(i));
+                        // update store's validMoves with validIndices
+                        if (board.validMoves.length === 0 && validIndices.length !== 0) {
+                            showMove(validIndices);
+                        }
+                        // Otherwise, just show unfiltered validIndices
+                    } else {
+                        if (board.validMoves.length === 0 && validIndices.length !== 0) {
+                            showMove(validIndices);
+                        }
+                    }
                 }
             }
-        }
+        } 
     }
 
     updateDanger() {
