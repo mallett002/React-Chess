@@ -9,6 +9,8 @@ import InCheckDisplay from '../components/InCheckDisplay';
 import SelectPromotion from '../components/SelectPromotion';
 // Constants:
 import { isInCheck, makeCoords } from '../constants/constants';
+// Actions:
+import { promotePawn } from '../actions/actions';
 
 // Renders the board, the fallen soldiers lists, and a link back to exit the game
 class Game extends Component {
@@ -22,11 +24,13 @@ class Game extends Component {
             twoCastleLeft: false,
             canPromotePawn: false,
             promoteAt: null,
-            promotionUser: null
+            promotionUser: null,
+            promotedPieces: 0
         };
 
         this.canCastle = this.canCastle.bind(this);
         this.canPromotePawn = this.canPromotePawn.bind(this);
+        this.promotePawn = this.promotePawn.bind(this);
     }
 
     // After a move, check if a pawn has made it to end of the board
@@ -53,13 +57,17 @@ class Game extends Component {
                 }
             }
         });
-        
+
         if (promotionIndex !== undefined) {
             this.setState({
                 canPromotePawn: true,
                 promoteAt: promotionIndex,
                 promotionUser: user
             });
+            // update the state's number of promoted pieces:
+            this.setState((prevState) => ({
+                promotedPieces: prevState.promotedPieces + 1
+            }));
         }
     }
 
@@ -209,7 +217,7 @@ class Game extends Component {
                     this.setState({
                         twoCastleRight: false
                     });
-                // check if only 1 has a piece and it's a rook and it hasn't moved
+                    // check if only 1 has a piece and it's a rook and it hasn't moved
                 } else if (piecesRight.length === 1 && board.layout[piecesRight[0]].name === "rook"
                     && !player2.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)) {
                     // check if any of the indicesRight are in danger, except for the rook, if so can't castle
@@ -226,7 +234,7 @@ class Game extends Component {
                             twoCastleRight: false
                         });
                     }
-                // If only 1 piece, but not a rook, or if the rook has moved, castleRight: false
+                    // If only 1 piece, but not a rook, or if the rook has moved, castleRight: false
                 } else if (piecesRight.length === 1 && board.layout[piecesRight[0]].name !== "rook"
                     || player2.rookOrKingMoved.includes(board.layout[piecesRight[0]].id)) {
                     this.setState({
@@ -240,7 +248,7 @@ class Game extends Component {
                     this.setState({
                         twoCastleLeft: false
                     });
-                // otherwise, if only 1 has a piece and it's a rook and it hasn't moved, keep going
+                    // otherwise, if only 1 has a piece and it's a rook and it hasn't moved, keep going
                 } else if (piecesLeft.length === 1 && board.layout[piecesLeft[0]].name === "rook"
                     && !player2.rookOrKingMoved.includes(board.layout[piecesLeft[0]].id)) {
                     // check if any of the indicesLeft are in danger, except for the rook, if so can't castle
@@ -266,6 +274,25 @@ class Game extends Component {
                 }
             }
         }
+    }
+
+    promotePawn(piece, user, i) {
+        // piece to be updated needs this format: {name:"rook", team:"player2", id:0},
+        let updatePiece = {
+            name: piece,
+            team: user.team,
+            // id: 64 for first promotedPiece, 65 for second and so on
+            id: 63 + this.state.promotedPieces
+        }
+        // Set the state's promotion properties back to falsy
+        this.setState({
+            canPromotePawn: false,
+            promoteAt: null,
+            promotionUser: null
+        });
+
+        // update the store's board.layout with the new piece
+        this.props.promotePawn(updatePiece, i);
     }
 
 
@@ -294,12 +321,15 @@ class Game extends Component {
                     {userInCheck && <InCheckDisplay user={userInCheck} />}
                 </div>
 
-                {canPromotePawn && <SelectPromotion promoteAt={promoteAt} canPromotePawn={this.canPromotePawn} user={promotionUser} />}
+                {canPromotePawn && <SelectPromotion
+                    promoteAt={promoteAt} canPromotePawn={this.canPromotePawn} user={promotionUser} promotePawn={this.promotePawn}
+                />}
 
                 <Board
                     player1={player1} player2={player2}
                     board={board} canCastle={this.canCastle}
                     castlePackage={castlePackage} canPromotePawn={this.canPromotePawn}
+
                 />
 
                 <div className='fallen-container'>
@@ -326,4 +356,4 @@ Game.propTypes = {
     board: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps)(Game);
+export default connect(mapStateToProps, { promotePawn })(Game);

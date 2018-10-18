@@ -1,4 +1,4 @@
-import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE, PIECES_OUT_OF_CHECK } from '../actions/actions';
+import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE, PIECES_OUT_OF_CHECK, PROMOTE_PAWN } from '../actions/actions';
 
 let initialState = {
   layout: [
@@ -69,6 +69,11 @@ const boardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 piecesOutOfCheck: action.payload
+            }
+        case PROMOTE_PAWN:
+            return {
+                ...state,
+                ...state.layout[action.payload.index] = action.payload.piece
             }
         default:
             return state
