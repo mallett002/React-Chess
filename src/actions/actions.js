@@ -16,6 +16,7 @@ export const PERFORM_CASTLE = 'PERFORM_CASTLE';
 export const PIECES_OUT_OF_CHECK = 'PIECES_OUT_OF_CHECK';
 export const P1_ALMOST_IN_CHECK = 'P1_ALMOST_IN_CHECK';
 export const P2_ALMOST_IN_CHECK = 'P2_ALMOST_IN_CHECK';
+export const PROMOTE_PAWN = 'PROMOTE_PAWN';
 
 
 // When a piece is selected
@@ -123,4 +124,10 @@ export const updatePlayerOneAlmostInCheck = array => ({
 export const updatePlayerTwoAlmostInCheck = array => ({
     type: P2_ALMOST_IN_CHECK,
     payload: array
+});
+
+// Promotes a pawn to different piece
+export const promotePawn = (piece, index) => ({
+    type: PROMOTE_PAWN,
+    payload: { piece: piece, index: index } 
 });
