@@ -356,4 +356,4 @@ Game.propTypes = {
     board: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, { promotePawn })(Game);
+export default connect(mapStateToProps, { promotePawn })(Game); 
