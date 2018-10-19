@@ -357,3 +357,8 @@ Game.propTypes = {
 };
 
 export default connect(mapStateToProps, { promotePawn })(Game);
+
+
+/* If king is in check and no moves out of check, Game Over 
+    Pop up a modal = Game Over with option to start new game (link back to first page)
+*/
