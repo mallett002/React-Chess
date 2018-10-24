@@ -1,4 +1,4 @@
-import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE, PIECES_OUT_OF_CHECK, PROMOTE_PAWN } from '../actions/actions';
+import { PIECE_MOVED, PIECE_SELECTED, DESELECT, SHOW_MOVE, PERFORM_CASTLE, PIECES_OUT_OF_CHECK, PROMOTE_PAWN, PLAYERS_ADDED, UPDATE_TURN } from '../actions/actions';
 
 let initialState = {
   layout: [
@@ -20,11 +20,17 @@ let initialState = {
   ],
   selected: null, // or something like: {piece: {name:"bishop", team:"player1", id:58}, index: 55}
   validMoves: [],
-  piecesOutOfCheck: []
+  piecesOutOfCheck: [],
+  turn: ""
 };
 
 const boardReducer = (state = initialState, action) => {
     switch (action.type) {
+        case PLAYERS_ADDED:
+            return {
+                ...state,
+                turn: action.payload.firstMove
+            }
         case PIECE_SELECTED:
             return {
                 ...state,
@@ -64,6 +70,11 @@ const boardReducer = (state = initialState, action) => {
                 selected: null,
                 validMoves: [],
                 piecesOutOfCheck: []
+            }
+        case UPDATE_TURN:
+            return {
+                ...state,
+                turn: state.turn === "player1" ? "player2" : "player1"
             }
         case PIECES_OUT_OF_CHECK:
             return {

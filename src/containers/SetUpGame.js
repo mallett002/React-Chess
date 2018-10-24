@@ -56,9 +56,14 @@ class SetUpGame extends Component {
     }
 
     handleSubmit() {
+        // get player that is white, as they will move first
+        let firstMove;
+        if (this.state.player1.color === "white") firstMove = "player1";
+        else if (this.state.player2.color === "white") firstMove = "player2";
+        else firstMove = "player1";
         // Dispatch an action with the info
         // addUserInfo(player1, player2)
-        this.props.addUserInfo(this.state.player1, this.state.player2);
+        this.props.addUserInfo(this.state.player1, this.state.player2, firstMove);
     }
 
     render() {

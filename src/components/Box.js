@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // Constants
 import { isLight } from '../constants/constants';
-import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, performCastle } from '../actions/actions';
+import { selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, performCastle, updateTurn } from '../actions/actions';
 
 // Components
 import King from './King';
@@ -27,7 +27,7 @@ class Box extends Component {
     // board is the Redux store for the board
     const { piece, coords, index,
       board, selectPiece, deselect, handleMove, addToFallen,
-      updatePlayerOneDanger, updatePlayerTwoDanger, castlePackage, performCastle } = this.props;
+      updatePlayerOneDanger, updatePlayerTwoDanger, castlePackage, performCastle, updateTurn } = this.props;
 
     // if piece is an empty one, and none are currently selected, do nothing
     if (piece.name === "empty" && board.selected === null) {
@@ -37,7 +37,8 @@ class Box extends Component {
     // if state.selected is null & the selected square has a piece in it
     if (board.selected === null) {
       // dispatch an action with the piece and it's current location
-      selectPiece(piece, index);
+      // Only select pieces of the team who's turn it is
+      if (piece.team === board.turn) selectPiece(piece, index);
       // If a king is selected, check if it can castle
       if (piece.name === "king") this.props.canCastle(piece, index);
     }
@@ -100,6 +101,8 @@ class Box extends Component {
         handleMove(board.selected.index, index);
       }
 
+      // Update the turn
+      updateTurn();
 
     }
   };
@@ -141,5 +144,5 @@ Box.propTypes = {
 };
 
 export default connect(null, {
-  selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, performCastle
+  selectPiece, deselect, addToFallen, updatePlayerOneDanger, updatePlayerTwoDanger, performCastle, updateTurn
 })(Box);
