@@ -77,7 +77,7 @@ class Board extends Component {
                     }
                 });
 
-                // Filter selected pieces validIndices to show only moves out of check
+                // Filter selected piece's validIndices to show only moves out of check
                 let validIndices = getValidMoves(
                     board.selected, board.layout, board.selected,
                     playerOneDanger, playerTwoDanger, playerOneCastle, playerTwoCastle

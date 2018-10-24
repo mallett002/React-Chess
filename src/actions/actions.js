@@ -1,5 +1,6 @@
 export const PIECE_SELECTED = 'PIECE_SELECTED';
 export const PIECE_MOVED = 'PIECE_MOVED';
+export const UPDATE_TURN = 'UPDATE_TURN';
 export const DESELECT = 'DESELECT';
 export const PIECE_TAKEN = 'PIECE_TAKEN';
 export const PLAYERS_ADDED = 'PLAYERS_ADDED';
@@ -36,6 +37,11 @@ export const moveTo = (from, to) => ({
     payload: { from: from, to: to }
 });
 
+// Changes player turns
+export const updateTurn = () => ({
+    type: UPDATE_TURN
+});
+
 // Add to "fallen soldiers" list
 export const addToFallen = (piece) => ({
     type: PIECE_TAKEN,
@@ -43,9 +49,9 @@ export const addToFallen = (piece) => ({
 });
 
 // Add user names and colors
-export const addUserInfo = (player1, player2) => ({
+export const addUserInfo = (player1, player2, firstMove) => ({
     type: PLAYERS_ADDED,
-    payload: {player1, player2}
+    payload: {player1, player2, firstMove}
 });
 
 // add indices that a given piece can move to

@@ -11,10 +11,9 @@ class SelectPromotion extends Component {
 
     render() {
         const { promoteAt, canPromotePawn, user } = this.props;
-        console.log(promoteAt);
         return (
-            <div className='select-promotion'>
-                <div className='piece-selection'>
+            <div className='modal-bg'>
+                <div className='modal-container'>
                     <h2 className="promotion-title">Select A Piece</h2>
                     <div className="select-container">
                         <div className="promotion-piece" onClick={() => this.promotePiece("queen", user, promoteAt)}><Queen user={user} /></div>

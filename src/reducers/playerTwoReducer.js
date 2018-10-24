@@ -19,7 +19,6 @@ const initialState = {
     piecesOut: [],
     dangerIndices: [],
     inCheck: false,
-    isTurn: false,
     rookOrKingMoved: [],
     almostInCheckPath: []
 };

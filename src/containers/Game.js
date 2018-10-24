@@ -7,8 +7,9 @@ import Board from '../components/Board';
 import FallenSoldiers from '../components/FallenSoldiers';
 import InCheckDisplay from '../components/InCheckDisplay';
 import SelectPromotion from '../components/SelectPromotion';
+import CheckMate from '../components/CheckMate';
 // Constants:
-import { isInCheck, makeCoords } from '../constants/constants';
+import { isInCheck, makeCoords, getSource, getOutOfCheck } from '../constants/constants';
 // Actions:
 import { promotePawn } from '../actions/actions';
 
@@ -25,12 +26,51 @@ class Game extends Component {
             canPromotePawn: false,
             promoteAt: null,
             promotionUser: null,
-            promotedPieces: 0
+            promotedPieces: 0,
+            checkMated: null
         };
 
         this.canCastle = this.canCastle.bind(this);
         this.canPromotePawn = this.canPromotePawn.bind(this);
         this.promotePawn = this.promotePawn.bind(this);
+    }
+    /*
+    after: move, castle, pawn promotion
+    After team 1 moves, check if team 2 is in check
+    If team 2 in check
+        check if team 2 has any pieces that can take out of check
+            if not, game over, team 1 wins
+    If team 2 not in check
+        check if team 2 has any pieces that can move anywhere
+            if not, it's a stalemate
+    */
+    componentDidUpdate() {
+        const { board, player1, player2 } = this.props;
+        const playerTurn = board.turn === "player1" ? player1 : player2;
+        let kingIndex;
+        // after any piece moves, check for game over or stalemate
+        if (board.selected === null) {
+            // check team who's turn it is 
+            // if in check, check if any pieces out of check
+            if (playerTurn.inCheck) {
+                // check if any pieces have moves out of check
+                // get the king's index:
+                board.layout.forEach((item, index) => {
+                    if (item.name === "king" && item.team === board.turn) kingIndex = index;
+                });
+                // get piecesOutOfCheck
+                let sourceOfCheck = getSource(board.layout, kingIndex, board.turn);
+                // get the pieces to take out of check
+                let piecesOutOfCheck = getOutOfCheck(board.layout, sourceOfCheck, kingIndex, board.turn);
+                // if no pieces out of check and checkMated is currently null
+                if (piecesOutOfCheck.length < 1 && this.state.checkMated === null) this.setState({ checkMated: playerTurn.userName });
+                   
+                // if not in check
+            } else {
+                // if no moves to make, stalemate
+            }
+        }
+        
     }
 
     // After a move, check if a pawn has made it to end of the board
@@ -298,7 +338,12 @@ class Game extends Component {
 
     render() {
         const { player1, player2, board } = this.props;
-        const { canPromotePawn, promoteAt, promotionUser } = this.state;
+        const { canPromotePawn, promoteAt, promotionUser, checkMated } = this.state;
+        let winner;
+        if (checkMated !== null) {
+            if (checkMated === "player1") winner = player2.userName;
+            else winner = player1.userName;
+        }
 
         // get the user in check, or false to pass to <InCheckDisplay />
         let userInCheck = isInCheck(player1, player2);
@@ -312,6 +357,8 @@ class Game extends Component {
                 castleLeft: this.state.twoCastleLeft
             }
         }
+        
+        
 
         return (
             <div className='game'>
@@ -325,11 +372,12 @@ class Game extends Component {
                     promoteAt={promoteAt} canPromotePawn={this.canPromotePawn} user={promotionUser} promotePawn={this.promotePawn}
                 />}
 
+                {checkMated !== null && <CheckMate winner={winner} />}
+
                 <Board
                     player1={player1} player2={player2}
                     board={board} canCastle={this.canCastle}
                     castlePackage={castlePackage} canPromotePawn={this.canPromotePawn}
-
                 />
 
                 <div className='fallen-container'>
