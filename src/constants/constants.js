@@ -64,7 +64,7 @@ export const makeCoords = index => {
 
 // getValidMoves returns array of indices that the piece can move to
 // board is state.board.layout
-// selectedPiece: state.board.selected
+// selectedPiece: current piece getting moves for
 export const getValidMoves = (selectedPiece, board, stateSelected,
     playerOneDanger = [], playerTwoDanger = [], playerOneCastle = null, playerTwoCastle = null) => {
 
@@ -159,6 +159,71 @@ export const getPath = (kingIndex, attackerIndex, dangerIndices, sourceName) => 
     }
     return path;
 }
+
+// Returns an object of info about the source of check
+export const getSource = (layout, kingIndex, turn) => {
+    let otherTeam = turn === "player1" ? "player2" : "player1";
+    let pathOfCheck;
+    let sourceName;
+    let sourceIndex;
+
+    // loop over board. get dangerIndices of opposite team
+    layout.forEach((item, index) => {
+        if (item.name !== "empty" && item.team === otherTeam) {
+            // Get the dangerIndices for the current piece
+            let dangerIndices = getValidMoves({
+                piece: item,
+                index: index
+            }, layout, null);
+
+            // Info about the source of check
+            if (dangerIndices.includes(kingIndex)) {
+                sourceName = layout[index].name;
+                sourceIndex = index;
+                pathOfCheck = getPath(kingIndex, index, dangerIndices, sourceName);
+            };
+        }
+    });
+
+    return {
+        sourceName,
+        sourceIndex,
+        pathOfCheck
+    }
+};
+
+// Returns an array of pieces out of check
+export const getOutOfCheck = (layout, sourceInfo, kingIndex, turn) => {
+    // will put the pieces in here and return it
+    let validOutOfCheck = [];
+    // Find pieces that can take out of check
+    // Look at each piece, if can go into pathOfDanger or source (king is different) can move this piece
+    layout.forEach((item, index) => {
+        if (item.name !== "empty" && item.team === turn) {
+            // get each piece's moves when not in check
+            let validIndices = getValidMoves({
+                piece: item,
+                index: index
+            }, layout, { piece: item, index: index });
+            
+            // find pieces that take out of check (use sourceInfo: {sourceName, sourceIndex, pathOfCheck})
+            // If it's not a king
+            if (item.name !== "king") {
+                // get only validIndices that are in pathOfCheck or the source
+                for (let i of validIndices) {
+                    if (sourceInfo.pathOfCheck.includes(i) || i === sourceInfo.sourceIndex) validOutOfCheck.push(index);
+                }
+            } else {
+                // Otherwise it's a king. Get only if can move out of pathOfCheck, or into the source
+                for (let i of validIndices) {
+                    if (!sourceInfo.pathOfCheck.includes(i) || i === sourceInfo.sourceIndex) validOutOfCheck.push(index);
+                }
+            }
+        }
+    });
+    return validOutOfCheck;
+};
+
 
 // Returns an array of indices where only 1 piece is preventing check
 export const getPreventCheckPath = (layout, piece, pieceIndex) => {
