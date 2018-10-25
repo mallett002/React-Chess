@@ -11,7 +11,7 @@ import CheckMate from '../components/CheckMate';
 // Constants:
 import { isInCheck, makeCoords, getSource, getOutOfCheck } from '../constants/constants';
 // Actions:
-import { promotePawn } from '../actions/actions';
+import { promotePawn, resetBoard } from '../actions/actions';
 
 // Renders the board, the fallen soldiers lists, and a link back to exit the game
 class Game extends Component {
@@ -33,17 +33,9 @@ class Game extends Component {
         this.canCastle = this.canCastle.bind(this);
         this.canPromotePawn = this.canPromotePawn.bind(this);
         this.promotePawn = this.promotePawn.bind(this);
+        this.callReset = this.callReset.bind(this);
     }
-    /*
-    after: move, castle, pawn promotion
-    After team 1 moves, check if team 2 is in check
-    If team 2 in check
-        check if team 2 has any pieces that can take out of check
-            if not, game over, team 1 wins
-    If team 2 not in check
-        check if team 2 has any pieces that can move anywhere
-            if not, it's a stalemate
-    */
+    
     componentDidUpdate() {
         const { board, player1, player2 } = this.props;
         const playerTurn = board.turn === "player1" ? player1 : player2;
@@ -70,7 +62,10 @@ class Game extends Component {
                 // if no moves to make, stalemate
             }
         }
-        
+    }
+
+    callReset() {
+        this.props.resetBoard();
     }
 
     // After a move, check if a pawn has made it to end of the board
@@ -385,7 +380,7 @@ class Game extends Component {
                     <FallenSoldiers user={player2} />
                 </div>
 
-                <Link exact='true' to='/'>Exit Game</Link>
+                <Link exact='true' to='/'><button onClick={this.callReset}>Exit Game</button></Link>
             </div>
 
         )
@@ -404,17 +399,4 @@ Game.propTypes = {
     board: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, { promotePawn })(Game);
-
-
-/* 
-TODO- update dangerIndices after a pawn promotion
-
-/*After team 1 moves, check if team 2 is in check
-    If team 2 in check
-        check if team 2 has any pieces that can take out of check
-            if not, game over, team 1 wins
-    If team 2 not in check
-        check if team 2 has any pieces that can move anywhere
-            if not, it's a stalemate
-*/
+export default connect(mapStateToProps, { promotePawn, resetBoard })(Game); 
